@@ -116,9 +116,18 @@ async function loadState() {
                 state.invoices = cloudData.invoices || [];
                 state.campaigns = cloudData.campaigns || [];
                 state.dmConfig = cloudData.dmConfig || state.dmConfig;
+                
+                // Fallback to Google display name if name in Firestore is empty
+                if (!state.profile.name && currentUser.displayName) {
+                    state.profile.name = currentUser.displayName;
+                    await saveState();
+                }
                 localStorage.setItem(getStorageKey(), JSON.stringify(state));
             } else {
                 // If doc doesn't exist (new user), create it using current local state
+                if (!state.profile.name && currentUser.displayName) {
+                    state.profile.name = currentUser.displayName;
+                }
                 await saveState();
             }
         } catch (e) {
@@ -1192,8 +1201,8 @@ function showAuthError(err) {
 
 function refreshUI() {
     // Set profile summary values in sidebar
-    document.getElementById('profile-name-summary').innerText = state.profile.name;
-    document.getElementById('profile-niche-summary').innerText = state.profile.niche;
+    document.getElementById('profile-name-summary').innerText = state.profile.name || (currentUser ? currentUser.displayName : "") || "Your Channel Name";
+    document.getElementById('profile-niche-summary').innerText = state.profile.niche || "Tech & Lifestyle";
     
     // Auto sync profile stats in memory to initial form inputs
     syncMediaKitPreview();
