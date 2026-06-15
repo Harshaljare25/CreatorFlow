@@ -106,10 +106,6 @@
                     <i class="fa-solid fa-list-check"></i>
                     <span>Campaign Tracker</span>
                 </a>
-                <a href="#" class="nav-link" data-tab="welcomedm">
-                    <i class="fa-solid fa-paper-plane"></i>
-                    <span>Welcome DM Setup</span>
-                </a>
             </nav>
             <div class="sidebar-footer">
                 <p class="creator-label">Business Suite for Creators</p>
@@ -227,16 +223,6 @@
                     </div>
                 </div>
 
-                <!-- Live DM automation status summary -->
-                <div class="content-card quick-status-card">
-                    <div class="quick-status-inner">
-                        <div class="status-indicator-dot active"></div>
-                        <div class="status-text">
-                            <strong>Automatic Welcome DM Active:</strong> Rotating 3 messages with 5-minute random delay.
-                        </div>
-                        <button class="btn btn-secondary btn-sm" onclick="navigateToTab('welcomedm')">Configure Settings</button>
-                    </div>
-                </div>
             </section>
 
             <!-- Invoices Tab -->
@@ -739,81 +725,6 @@
                 </div>
             </section>
 
-            <!-- Welcome DM Setup Tab -->
-            <section id="welcomedm" class="tab-content">
-                <div class="welcomedm-layout">
-                    <!-- Settings Side -->
-                    <div class="content-card config-panel">
-                        <div class="card-header">
-                            <h2>Anti-Spam Welcome DM Settings</h2>
-                            <p class="subtitle">Avoid platform shadowbans. Change message variants and add human-like time delays.</p>
-                        </div>
-                        <form id="dm-config-form" class="simple-form">
-                            <div class="form-group">
-                                <label><strong>Message Variation A</strong> (Required)</label>
-                                <textarea id="dm-var-a" rows="3" required placeholder="Hey {name}! Thanks for joining. What type of content interests you the most?"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label><strong>Message Variation B</strong> (Recommended to avoid spam flag)</label>
-                                <textarea id="dm-var-b" rows="3" placeholder="Welcome aboard, {name}! Glad to connect. Let me know if you need help with creator resources."></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label><strong>Message Variation C</strong> (Recommended to avoid spam flag)</label>
-                                <textarea id="dm-var-c" rows="3" placeholder="Hello {name}! Thanks for the follow. I post weekly tutorials. Let me know your feedback!"></textarea>
-                            </div>
-
-                            <hr class="form-divider">
-
-                            <div class="form-row-2">
-                                <div class="form-group">
-                                    <label for="dm-delay">Random Human Delay</label>
-                                    <select id="dm-delay">
-                                        <option value="5">1 - 5 Minutes (Safe)</option>
-                                        <option value="15" selected>5 - 15 Minutes (Very Safe)</option>
-                                        <option value="0">No Delay (High Spam Risk)</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Spam Safety Index</label>
-                                    <div class="safety-meter-wrapper">
-                                        <div class="safety-indicator-meter" id="safety-meter-fill" style="width: 85%; background-color: #10b981;"></div>
-                                    </div>
-                                    <span class="safety-status-label" id="safety-meter-text">Very Safe (Multiple variants + Human delay)</span>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block">Save Configuration</button>
-                        </form>
-                    </div>
-
-                    <!-- Live Simulator Side -->
-                    <div class="content-card simulator-panel">
-                        <div class="card-header">
-                            <h2>Interactive DM Simulator</h2>
-                            <p class="subtitle">Trigger a mock follow notification to watch your automated anti-spam queue process the DM.</p>
-                        </div>
-                        
-                        <div class="sim-controls">
-                            <div class="input-action-row">
-                                <input type="text" id="sim-username" value="Aarav_Sharma" placeholder="Enter follower username">
-                                <button class="btn btn-secondary" id="sim-follow-btn">
-                                    <i class="fa-solid fa-user-plus"></i> Trigger Mock Follow
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Chat Mockup -->
-                        <div class="instagram-chat-box">
-                            <div class="chat-header">
-                                <div class="chat-avatar"><i class="fa-brands fa-instagram"></i></div>
-                                <div class="chat-username" id="chat-header-name">Aarav_Sharma</div>
-                            </div>
-                            <div class="chat-messages-body" id="chat-messages-container">
-                                <div class="chat-info-banner">No active conversation simulation. Press Trigger Mock Follow above.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
         </main>
     </div>
 
