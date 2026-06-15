@@ -1595,31 +1595,40 @@ textarea {
         visibility: hidden;
     }
     
-    .modal-overlay.active {
+    #invoice-modal,
+    #invoice-modal * {
+        visibility: visible;
+    }
+    
+    #invoice-modal {
         position: absolute;
         left: 0;
         top: 0;
         width: 100%;
+        height: auto;
         background: none;
-        display: block;
+        display: block !important;
+        box-shadow: none;
         padding: 0;
     }
     
-    .modal-card.print-invoice-card {
+    .modal-card.print-modal-card {
         border: none;
         box-shadow: none;
-        width: 100%;
-        max-width: 100%;
-        padding: 0;
-        margin: 0;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
         visibility: visible;
         max-height: none;
         overflow: visible;
+        background: transparent;
+        position: static;
     }
     
-    .invoice-print-area,
-    .invoice-print-area * {
-        visibility: visible;
+    .modal-close-header,
+    .modal-footer {
+        display: none !important;
     }
     
     .no-print {
