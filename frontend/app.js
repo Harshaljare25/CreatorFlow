@@ -60,20 +60,49 @@ let state = {
     activeReminderType: 'polite'
 };
 
+function getStorageKey() {
+    return currentUser ? `creatorflow_state_${currentUser.uid}` : 'creatorflow_state_anonymous';
+}
+
+function resetStateToDefault() {
+    state = {
+        profile: {
+            name: "",
+            niche: "",
+            bio: "",
+            youtubeSubs: 0,
+            instagramFollowers: 0,
+            avgViews: 0,
+            engagementRate: 0.0,
+            rateDedicated: 0,
+            rateIntegrated: 0
+        },
+        invoices: [],
+        campaigns: [],
+        dmConfig: {
+            varA: "Hey {name}! Thanks for joining. What type of content interests you the most?",
+            varB: "Welcome aboard, {name}! Glad to connect. Let me know if you need help with creator resources.",
+            varC: "Hello {name}! Thanks for the follow. I post weekly tutorials. Let me know your feedback!",
+            delay: "15"
+        },
+        activeReminderInvoiceId: null,
+        activeReminderType: 'polite'
+    };
+}
+
 // Load State from LocalStorage and Firestore
 async function loadState() {
+    // Reset memory state first to avoid cross-user pollution
+    resetStateToDefault();
+
     // 1. Try local storage first to render immediately
-    const saved = localStorage.getItem('creatorflow_state');
+    const saved = localStorage.getItem(getStorageKey());
     if (saved) {
         try {
             state = JSON.parse(saved);
         } catch (e) {
             console.error("Failed to parse saved state", e);
         }
-    } else {
-        // Initialize with empty arrays for a clean production setup
-        state.invoices = [];
-        state.campaigns = [];
     }
     
     // 2. If signed in, fetch from Firestore
@@ -87,7 +116,7 @@ async function loadState() {
                 state.invoices = cloudData.invoices || [];
                 state.campaigns = cloudData.campaigns || [];
                 state.dmConfig = cloudData.dmConfig || state.dmConfig;
-                localStorage.setItem('creatorflow_state', JSON.stringify(state));
+                localStorage.setItem(getStorageKey(), JSON.stringify(state));
             } else {
                 // If doc doesn't exist (new user), create it using current local state
                 await saveState();
@@ -100,7 +129,7 @@ async function loadState() {
 
 // Save State to LocalStorage and Firestore
 async function saveState() {
-    localStorage.setItem('creatorflow_state', JSON.stringify(state));
+    localStorage.setItem(getStorageKey(), JSON.stringify(state));
     
     if (currentUser && firestoreDb) {
         try {
@@ -1418,6 +1447,9 @@ window.addEventListener('DOMContentLoaded', () => {
         } else {
             currentUser = null;
             
+            // Reset global in-memory state on sign-out
+            resetStateToDefault();
+            
             // Show auth overlay
             authScreen.classList.add('active');
             
@@ -1545,7 +1577,7 @@ window.addEventListener('DOMContentLoaded', () => {
         try {
             await signOut(auth);
             // Clear local storage on sign out
-            localStorage.removeItem('creatorflow_state');
+            localStorage.removeItem(getStorageKey());
         } catch (err) {
             console.error("Logout failed:", err);
         }
