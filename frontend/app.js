@@ -126,16 +126,16 @@ async function loadState() {
                 state.campaigns = cloudData.campaigns || [];
                 state.dmConfig = cloudData.dmConfig || state.dmConfig;
                 
-                // Fallback to Google display name if name in Firestore is empty
-                if (!state.profile.name && currentUser.displayName) {
-                    state.profile.name = currentUser.displayName;
+                // Fallback to Google display name or email prefix if name in Firestore is empty
+                if (!state.profile.name) {
+                    state.profile.name = currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : "") || "Creator";
                     await saveState();
                 }
                 localStorage.setItem(getStorageKey(), JSON.stringify(state));
             } else {
                 // If doc doesn't exist (new user), create it using current local state
-                if (!state.profile.name && currentUser.displayName) {
-                    state.profile.name = currentUser.displayName;
+                if (!state.profile.name) {
+                    state.profile.name = currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : "") || "Creator";
                 }
                 await saveState();
             }
@@ -858,27 +858,129 @@ function extractInstagramFollowers(html) {
     return null;
 }
 
-async function fetchHtmlWithProxy(targetUrl) {
-    // Try Proxy 1: corsproxy.io (returns raw text directly)
-    try {
-        const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(targetUrl)}`);
-        if (res.ok) {
-            const text = await res.text();
-            if (text && text.length > 500) {
-                return text;
-            }
+async function fetchYoutubeSubsFromInvidious(handleOrId) {
+    let query = handleOrId.trim();
+    
+    // Extract handle/ID if full URL is given
+    if (query.startsWith('http://') || query.startsWith('https://')) {
+        let parts = query.split('/');
+        let lastPart = parts[parts.length - 1];
+        if (lastPart.startsWith('@')) {
+            query = lastPart;
+        } else if (parts.includes('channel')) {
+            query = lastPart;
+        } else if (parts.includes('c')) {
+            query = lastPart;
+        } else {
+            query = lastPart;
         }
-    } catch (err) {
-        console.warn("corsproxy.io failed, trying allorigins...", err);
     }
 
-    // Try Proxy 2: api.allorigins.win (returns JSON with contents)
-    const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`);
-    if (!res.ok) {
-        throw new Error(`Failed to fetch via CORS proxies. Status: ${res.status}`);
+    // Standardize query to start with @ if it's a handle
+    if (!query.startsWith('@') && !query.startsWith('UC')) {
+        query = '@' + query;
     }
-    const data = await res.json();
-    return data.contents;
+
+    const instances = [
+        'https://vid.puffyan.us',
+        'https://yewtu.be',
+        'https://invidious.nerdvpn.de',
+        'https://invidious.projectsegfaut.im',
+        'https://invidious.flokinet.to'
+    ];
+
+    let lastError = null;
+    for (const instance of instances) {
+        try {
+            let fetchUrl = '';
+            if (query.startsWith('UC') && query.length === 24) {
+                fetchUrl = `${instance}/api/v1/channels/${query}`;
+            } else {
+                fetchUrl = `${instance}/api/v1/search?q=${encodeURIComponent(query)}&type=channel`;
+            }
+            
+            // Set 8-second timeout for fetch
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
+            
+            const res = await fetch(fetchUrl, { signal: controller.signal });
+            clearTimeout(timeoutId);
+            
+            if (res.ok) {
+                const data = await res.json();
+                if (query.startsWith('UC') && query.length === 24) {
+                    if (data && typeof data.subCount === 'number') {
+                        return data.subCount;
+                    }
+                } else {
+                    if (Array.isArray(data) && data.length > 0) {
+                        const channel = data.find(item => item.type === 'channel');
+                        if (channel && typeof channel.subCount === 'number') {
+                            return channel.subCount;
+                        }
+                    }
+                }
+            }
+        } catch (err) {
+            console.warn(`Invidious instance ${instance} failed:`, err);
+            lastError = err;
+        }
+    }
+    throw lastError || new Error("All Invidious instances failed to fetch YouTube subscribers.");
+}
+
+async function fetchHtmlWithProxy(targetUrl) {
+    const proxies = [
+        {
+            url: (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+            type: 'text'
+        },
+        {
+            url: (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+            type: 'text'
+        },
+        {
+            url: (u) => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
+            type: 'allorigins-json'
+        },
+        {
+            url: (u) => `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(u)}`,
+            type: 'text'
+        }
+    ];
+
+    let lastError = null;
+    for (const proxy of proxies) {
+        try {
+            const proxyUrl = proxy.url(targetUrl);
+            
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000);
+            
+            const res = await fetch(proxyUrl, { signal: controller.signal });
+            clearTimeout(timeoutId);
+            
+            if (res.ok) {
+                if (proxy.type === 'text') {
+                    const text = await res.text();
+                    if (text && text.length > 300) {
+                        return text;
+                    }
+                } else if (proxy.type === 'allorigins-json') {
+                    const data = await res.json();
+                    if (data && data.contents && data.contents.length > 300) {
+                        return data.contents;
+                    }
+                }
+            } else {
+                console.warn(`Proxy ${proxy.type} returned status ${res.status}`);
+            }
+        } catch (err) {
+            console.warn(`Proxy ${proxy.type} failed for ${targetUrl}:`, err);
+            lastError = err;
+        }
+    }
+    throw lastError || new Error("All CORS proxies failed to fetch target URL.");
 }
 
 // Event listener for fetching social follower/subscriber count
@@ -910,20 +1012,26 @@ window.addEventListener('DOMContentLoaded', () => {
         let fetchedIg = null;
         let errors = [];
         
-        // 1. Fetch YouTube Subscribers
+        // 1. Fetch YouTube Subscribers (Try Invidious API first, fallback to proxy scraping)
         if (ytInput) {
             try {
-                const url = getYoutubeFetchUrl(ytInput);
-                const html = await fetchHtmlWithProxy(url);
-                const subs = extractYoutubeSubscribers(html);
-                if (subs !== null) {
-                    fetchedYt = subs;
-                } else {
-                    errors.push("Could not parse YouTube subscribers. Check the channel link/handle.");
+                // Try Invidious
+                fetchedYt = await fetchYoutubeSubsFromInvidious(ytInput);
+            } catch (invidiousErr) {
+                console.warn("Invidious failed, falling back to HTML scraper...", invidiousErr);
+                try {
+                    const url = getYoutubeFetchUrl(ytInput);
+                    const html = await fetchHtmlWithProxy(url);
+                    const subs = extractYoutubeSubscribers(html);
+                    if (subs !== null) {
+                        fetchedYt = subs;
+                    } else {
+                        errors.push("Could not parse YouTube subscribers. Check the channel link/handle.");
+                    }
+                } catch (err) {
+                    console.error("YouTube Fetch Error:", err);
+                    errors.push("Failed to connect to YouTube. The proxy might be rate-limited.");
                 }
-            } catch (err) {
-                console.error("YouTube Fetch Error:", err);
-                errors.push("Failed to connect to YouTube. The proxy might be rate-limited.");
             }
         }
         
@@ -1432,7 +1540,8 @@ function showAuthError(err) {
 
 function refreshUI() {
     // Set profile summary values in sidebar
-    document.getElementById('profile-name-summary').innerText = state.profile.name || (currentUser ? currentUser.displayName : "") || "Your Channel Name";
+    const displayName = state.profile.name || (currentUser ? (currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : "")) : "") || "Creator";
+    document.getElementById('profile-name-summary').innerText = displayName;
     document.getElementById('profile-niche-summary').innerText = state.profile.niche || "Tech & Lifestyle";
     
     // Auto sync profile stats in memory to initial form inputs

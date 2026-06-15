@@ -5,7 +5,9 @@ import {
     createUserWithEmailAndPassword, 
     signInWithPopup, 
     GoogleAuthProvider, 
-    onAuthStateChanged 
+    onAuthStateChanged,
+    setPersistence,
+    browserSessionPersistence
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { 
     getFirestore, 
@@ -24,6 +26,9 @@ if (isFirebaseConfigured) {
     try {
         app = initializeApp(firebaseConfig);
         auth = getAuth(app);
+        // Set persistence to session (clears session when browser tab is closed)
+        setPersistence(auth, browserSessionPersistence)
+            .catch((err) => console.error("Error setting persistence:", err));
         db = getFirestore(app);
     } catch (err) {
         console.error("Firebase initialization failed:", err);
