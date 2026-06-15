@@ -310,9 +310,6 @@ function renderDashboard() {
         });
     }
 
-    // Set header profile
-    document.getElementById('profile-name-summary').innerText = state.profile.name;
-    document.getElementById('profile-niche-summary').innerText = state.profile.niche;
 }
 
 function getStatusLabelText(status) {
@@ -684,20 +681,11 @@ document.getElementById('copy-reminder-btn').addEventListener('click', () => {
 /* ==========================================================================
    Media Kit & Pitch Logic
    ========================================================================== */
-function initializeMediaKitForm() {
-    const form = document.getElementById('mediakit-form');
+function populateMediaKitFormFromState() {
+    const channelNameInput = document.getElementById('mk-channel-name');
+    if (!channelNameInput) return; // Guard clause in case DOM is not ready
     
-    // Bind form changes to sync to preview in real-time
-    const inputs = form.querySelectorAll('input, select, textarea');
-    inputs.forEach(input => {
-        // Only bind input event listeners to non-button fields
-        if (input.id !== 'btn-fetch-socials') {
-            input.addEventListener('input', syncMediaKitPreview);
-        }
-    });
-
-    // Populate fields from state
-    document.getElementById('mk-channel-name').value = state.profile.name || "";
+    channelNameInput.value = state.profile.name || "";
     document.getElementById('mk-niche').value = state.profile.niche || "";
     document.getElementById('mk-bio').value = state.profile.bio || "";
     document.getElementById('mk-youtube-url').value = state.profile.youtubeUrl || "";
@@ -708,6 +696,23 @@ function initializeMediaKitForm() {
     document.getElementById('mk-engagement-rate').value = state.profile.engagementRate || 0.0;
     document.getElementById('mk-rate-dedicated').value = state.profile.rateDedicated || 0;
     document.getElementById('mk-rate-integrated').value = state.profile.rateIntegrated || 0;
+}
+
+function initializeMediaKitForm() {
+    const form = document.getElementById('mediakit-form');
+    
+    // Bind form changes to sync to preview in real-time
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        // Only bind input event listeners to non-button fields
+        if (input.id !== 'btn-fetch-socials' && !input.dataset.bound) {
+            input.addEventListener('input', syncMediaKitPreview);
+            input.dataset.bound = "true";
+        }
+    });
+
+    // Populate fields from state
+    populateMediaKitFormFromState();
 
     syncMediaKitPreview();
 }
@@ -1543,6 +1548,9 @@ function refreshUI() {
     const displayName = state.profile.name || (currentUser ? (currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : "")) : "") || "Creator";
     document.getElementById('profile-name-summary').innerText = displayName;
     document.getElementById('profile-niche-summary').innerText = state.profile.niche || "Tech & Lifestyle";
+    
+    // Populate form inputs from state first to prevent syncMediaKitPreview from overwriting state with empty form values
+    populateMediaKitFormFromState();
     
     // Auto sync profile stats in memory to initial form inputs
     syncMediaKitPreview();
