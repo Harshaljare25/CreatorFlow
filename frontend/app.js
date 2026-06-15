@@ -1264,6 +1264,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
         // Hydrate from local storage for demo
         loadState().then(() => {
+            const appContainer = document.querySelector('.app-container');
+            if (appContainer) appContainer.style.display = 'flex';
             refreshUI();
         });
         return;
@@ -1271,11 +1273,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Auth state observer
     onAuthStateChanged(auth, async (user) => {
+        const appContainer = document.querySelector('.app-container');
         if (user) {
             currentUser = user;
             
-            // Hide auth overlay
+            // Hide auth overlay & show app
             authScreen.classList.remove('active');
+            if (appContainer) appContainer.style.display = 'flex';
             
             // Load state from Firestore & LocalStorage
             await loadState();
@@ -1288,8 +1292,9 @@ window.addEventListener('DOMContentLoaded', () => {
             // Reset global in-memory state on sign-out
             resetStateToDefault();
             
-            // Show auth overlay
+            // Show auth overlay & hide app completely to enforce compulsory login
             authScreen.classList.add('active');
+            if (appContainer) appContainer.style.display = 'none';
             
             // Reset forms and spinners
             loginForm.reset();

@@ -63,7 +63,7 @@ body {
 
 /* App Container Layout */
 .app-container {
-    display: flex;
+    display: none; /* Hidden by default to prevent auth flicker; enabled dynamically via JS */
     min-height: 100vh;
 }
 
