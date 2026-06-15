@@ -1,89 +1,902 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CreatorFlow - Simple Creator Business Suite</title>
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Authentication Screen Overlay -->
+    <div id="auth-screen" class="auth-screen active">
+        <div class="auth-card">
+            <div class="auth-header">
+                <i class="fa-solid fa-square-poll-horizontal auth-logo-icon"></i>
+                <span class="auth-logo-text">CreatorFlow</span>
+                <p class="auth-subtitle">Log in or create an account to sync your suite</p>
+            </div>
+            
+            <!-- Tabs for Login / Signup -->
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</button>
+                <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Register</button>
+            </div>
 
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/12.14.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/12.14.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/12.14.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/12.14.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/12.14.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/12.14.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/12.14.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/12.14.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/12.14.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/12.14.0/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form active">
+                <div class="form-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" id="btn-login-submit">
+                    <span class="btn-text">Sign In</span>
+                    <span class="spinner" style="display:none;"><i class="fa-solid fa-circle-notch fa-spin"></i></span>
+                </button>
+            </form>
 
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
+            <!-- Signup Form -->
+            <form id="signup-form" class="auth-form">
+                <div class="form-group">
+                    <label for="signup-name">Channel / Business Name</label>
+                    <input type="text" id="signup-name" placeholder="E.g., Tech Media" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password (min 6 chars)</label>
+                    <input type="password" id="signup-password" placeholder="••••••••" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" id="btn-signup-submit">
+                    <span class="btn-text">Create Account</span>
+                    <span class="spinner" style="display:none;"><i class="fa-solid fa-circle-notch fa-spin"></i></span>
+                </button>
+            </form>
+
+            <div class="auth-divider">
+                <span>or</span>
+            </div>
+
+            <!-- Google Sign-In -->
+            <button class="btn btn-secondary btn-block google-auth-btn" id="btn-google-auth">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" alt="Google Logo" class="google-icon-img">
+                Sign In with Google
+            </button>
+            
+            <div id="auth-error-msg" class="auth-error-message" style="display:none;"></div>
+        </div>
     </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <i class="fa-solid fa-square-poll-horizontal logo-icon"></i>
+                <span class="logo-text">CreatorFlow</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#" class="nav-link active" data-tab="dashboard">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-link" data-tab="invoices">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                    <span>Invoices & GST</span>
+                </a>
+                <a href="#" class="nav-link" data-tab="mediakit">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span>Media Kit & Pitch</span>
+                </a>
+                <a href="#" class="nav-link" data-tab="branding">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Branding Assets</span>
+                </a>
+                <a href="#" class="nav-link" data-tab="campaigns">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Campaign Tracker</span>
+                </a>
+                <a href="#" class="nav-link" data-tab="welcomedm">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Welcome DM Setup</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <p class="creator-label">Business Suite for Creators</p>
+                <div class="user-profile-summary">
+                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                    <div class="user-info">
+                        <p class="user-name" id="profile-name-summary">Your Channel Name</p>
+                        <p class="user-niche" id="profile-niche-summary">Tech & Lifestyle</p>
+                    </div>
+                </div>
+                <button class="btn btn-secondary btn-sm btn-block logout-btn" id="btn-logout" style="margin-top: 12px;">
+                    <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                </button>
+            </div>
+        </aside>
 
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
-    </script>
-  </body>
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="header-title-wrapper">
+                    <h1 id="page-title">Dashboard Overview</h1>
+                    <p id="page-subtitle" class="subtitle">Monitor your revenue, pending deliverables, and business metrics.</p>
+                </div>
+                <div class="current-date" id="live-date">June 13, 2026</div>
+            </header>
+
+            <!-- Dashboard Tab -->
+            <section id="dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper income"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Revenue</span>
+                            <span class="stat-value" id="dashboard-total-revenue">₹0.00</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper pending"><i class="fa-solid fa-clock"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">Pending Payments</span>
+                            <span class="stat-value" id="dashboard-pending-payments">₹0.00</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper tax"><i class="fa-solid fa-building-columns"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">GST Owed (18% Est)</span>
+                            <span class="stat-value" id="dashboard-gst-owed">₹0.00</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper campaigns"><i class="fa-solid fa-bullhorn"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-label">Active Campaigns</span>
+                            <span class="stat-value" id="dashboard-active-campaigns">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-details-grid">
+                    <!-- Income Trend Chart -->
+                    <div class="content-card chart-card">
+                        <div class="card-header">
+                            <h2>Monthly Income Trend</h2>
+                            <span class="badge">Last 6 Months</span>
+                        </div>
+                        <div class="chart-container">
+                            <!-- SVG-based simple & clean minimalist chart -->
+                            <svg class="minimal-chart" viewBox="0 0 500 200">
+                                <!-- Grid lines -->
+                                <line x1="50" y1="30" x2="470" y2="30" class="chart-grid-line" />
+                                <line x1="50" y1="80" x2="470" y2="80" class="chart-grid-line" />
+                                <line x1="50" y1="130" x2="470" y2="130" class="chart-grid-line" />
+                                <line x1="50" y1="170" x2="470" y2="170" class="chart-grid-line" />
+                                
+                                <!-- Line and Points -->
+                                <polyline fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                                    points="80,160 150,140 220,120 290,70 360,90 430,40" />
+                                
+                                <circle cx="80" cy="160" r="4.5" fill="#2563eb" stroke="#ffffff" stroke-width="1.5" />
+                                <circle cx="150" cy="140" r="4.5" fill="#2563eb" stroke="#ffffff" stroke-width="1.5" />
+                                <circle cx="220" cy="120" r="4.5" fill="#2563eb" stroke="#ffffff" stroke-width="1.5" />
+                                <circle cx="290" cy="70" r="4.5" fill="#2563eb" stroke="#ffffff" stroke-width="1.5" />
+                                <circle cx="360" cy="90" r="4.5" fill="#2563eb" stroke="#ffffff" stroke-width="1.5" />
+                                <circle cx="430" cy="40" r="4.5" fill="#2563eb" stroke="#ffffff" stroke-width="1.5" />
+
+                                <!-- Month labels -->
+                                <text x="80" y="190" class="chart-label" text-anchor="middle">Jan</text>
+                                <text x="150" y="190" class="chart-label" text-anchor="middle">Feb</text>
+                                <text x="220" y="190" class="chart-label" text-anchor="middle">Mar</text>
+                                <text x="290" y="190" class="chart-label" text-anchor="middle">Apr</text>
+                                <text x="360" y="190" class="chart-label" text-anchor="middle">May</text>
+                                <text x="430" y="190" class="chart-label" text-anchor="middle">Jun</text>
+
+                                <!-- Value labels on points -->
+                                <text x="80" y="145" class="chart-value-tag" text-anchor="middle">₹30K</text>
+                                <text x="150" y="125" class="chart-value-tag" text-anchor="middle">₹45K</text>
+                                <text x="220" y="105" class="chart-value-tag" text-anchor="middle">₹60K</text>
+                                <text x="290" y="55" class="chart-value-tag" text-anchor="middle">₹110K</text>
+                                <text x="360" y="75" class="chart-value-tag" text-anchor="middle">₹90K</text>
+                                <text x="430" y="25" class="chart-value-tag" text-anchor="middle">₹150K</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Urgent Tasks / Deadlines -->
+                    <div class="content-card deadline-card">
+                        <div class="card-header">
+                            <h2>Critical Campaign Deadlines</h2>
+                        </div>
+                        <div class="campaign-deadline-list" id="dashboard-campaign-deadlines">
+                            <!-- Inserted dynamically via JavaScript -->
+                            <div class="no-data-msg">No active campaigns scheduled. Add them in the Campaign Tracker.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live DM automation status summary -->
+                <div class="content-card quick-status-card">
+                    <div class="quick-status-inner">
+                        <div class="status-indicator-dot active"></div>
+                        <div class="status-text">
+                            <strong>Automatic Welcome DM Active:</strong> Rotating 3 messages with 5-minute random delay.
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="navigateToTab('welcomedm')">Configure Settings</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Invoices Tab -->
+            <section id="invoices" class="tab-content">
+                <div class="invoices-layout">
+                    <!-- Invoice Creator Form -->
+                    <div class="content-card form-column">
+                        <div class="card-header">
+                            <h2>New Creator Invoice</h2>
+                            <p class="subtitle">Quickly generate GST-compliant invoices for brand sponsorships.</p>
+                        </div>
+                        <form id="invoice-form" class="simple-form">
+                            <!-- Invoice Meta Info -->
+                            <div class="form-row-2">
+                                <div class="form-group">
+                                    <label for="inv-number">Invoice Number</label>
+                                    <input type="text" id="inv-number" placeholder="CF-2026-001" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inv-date">Date</label>
+                                    <input type="date" id="inv-date" required>
+                                </div>
+                            </div>
+
+                            <hr class="form-divider">
+                            
+                            <!-- Creator Details -->
+                            <h3>From (Your Details)</h3>
+                            <div class="form-group">
+                                <label for="inv-creator-name">Creator / Business Name</label>
+                                <input type="text" id="inv-creator-name" placeholder="E.g., Harshal Tech Media" required>
+                            </div>
+                            <div class="form-row-2">
+                                <div class="form-group">
+                                    <label for="inv-creator-state">Your State</label>
+                                    <select id="inv-creator-state" required>
+                                        <option value="Maharashtra" selected>Maharashtra</option>
+                                        <option value="Karnataka">Karnataka</option>
+                                        <option value="Delhi">Delhi</option>
+                                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                        <option value="Tamil Nadu">Tamil Nadu</option>
+                                        <option value="Telangana">Telangana</option>
+                                        <option value="Other">Other State</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inv-creator-gstin">Your GSTIN (Optional)</label>
+                                    <input type="text" id="inv-creator-gstin" placeholder="27AAAAA1111A1Z1">
+                                </div>
+                            </div>
+
+                            <hr class="form-divider">
+
+                            <!-- Brand Details -->
+                            <h3>To (Brand Details)</h3>
+                            <div class="form-group">
+                                <label for="inv-brand-name">Brand Company Name</label>
+                                <input type="text" id="inv-brand-name" placeholder="E.g., Mamaearth India" required>
+                            </div>
+                            <div class="form-row-2">
+                                <div class="form-group">
+                                    <label for="inv-brand-state">Brand State</label>
+                                    <select id="inv-brand-state" required>
+                                        <option value="Karnataka" selected>Karnataka (Bengaluru)</option>
+                                        <option value="Maharashtra">Maharashtra (Mumbai)</option>
+                                        <option value="Delhi">Delhi</option>
+                                        <option value="Haryana">Haryana (Gurugram)</option>
+                                        <option value="Other">Other State</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inv-brand-gstin">Brand GSTIN (If applicable)</label>
+                                    <input type="text" id="inv-brand-gstin" placeholder="29BBBBB2222B2Z2">
+                                </div>
+                            </div>
+
+                            <hr class="form-divider">
+
+                            <!-- Line Item Details -->
+                            <h3>Deliverables & Pricing</h3>
+                            <div class="form-group">
+                                <label for="inv-item-desc">Item Description</label>
+                                <input type="text" id="inv-item-desc" placeholder="E.g., 1x Dedicated YouTube Video Integration" required>
+                            </div>
+                            <div class="form-row-2">
+                                <div class="form-group">
+                                    <label for="inv-item-price">Base Pricing (₹)</label>
+                                    <input type="number" id="inv-item-price" placeholder="50000" min="0" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inv-gst-rate">GST Rate</label>
+                                    <select id="inv-gst-rate">
+                                        <option value="18" selected>18% (Standard Services)</option>
+                                        <option value="0">0% (Unregistered/Exempt)</option>
+                                        <option value="5">5%</option>
+                                        <option value="12">12%</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="gst-summary-block">
+                                <div class="gst-calc-row">
+                                    <span>Base Value:</span>
+                                    <span id="calc-base">₹0.00</span>
+                                </div>
+                                <div class="gst-calc-row">
+                                    <span id="calc-tax-label">IGST (18%):</span>
+                                    <span id="calc-tax">₹0.00</span>
+                                </div>
+                                <div class="gst-calc-row total">
+                                    <span>Grand Total:</span>
+                                    <span id="calc-total">₹0.00</span>
+                                </div>
+                                <div class="gst-note-text" id="gst-mechanism-note">
+                                    Inter-state transaction detected: Integrated GST (IGST) will be applied.
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fa-solid fa-circle-plus"></i> Generate & Save Invoice
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Invoices Sent & Reminders -->
+                    <div class="list-column">
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2>Sent Invoices Log</h2>
+                            </div>
+                            <div class="table-container">
+                                <table class="clean-table" id="invoices-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Invoice #</th>
+                                            <th>Brand / Date</th>
+                                            <th>Amount (Incl. GST)</th>
+                                            <th>Status</th>
+                                            <th class="actions-head">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="invoice-list-tbody">
+                                        <!-- Inserted dynamically via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Payment Reminder Templates -->
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h2>Easy Payment Reminders</h2>
+                                <p class="subtitle">Quickly copy and send these follow-ups when brands delay your payment.</p>
+                            </div>
+                            <div class="reminder-selector">
+                                <button class="reminder-tab active" data-reminder-type="polite">Polite Reminder (Due soon)</button>
+                                <button class="reminder-tab" data-reminder-type="firm">Firm Reminder (Overdue)</button>
+                                <button class="reminder-tab" data-reminder-type="urgent">Urgent Follow-up (14+ Days Overdue)</button>
+                            </div>
+                            <div class="reminder-box">
+                                <div class="reminder-content" id="reminder-text-box">
+                                    Please select an invoice from the sent log to pre-fill the templates.
+                                </div>
+                                <button class="btn btn-secondary btn-sm copy-btn" id="copy-reminder-btn">
+                                    <i class="fa-regular fa-copy"></i> Copy Reminder Text
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Media Kit & Pitch Tab -->
+            <section id="mediakit" class="tab-content">
+                <div class="mediakit-layout">
+                    <!-- Media Kit Parameters -->
+                    <div class="content-card input-form-card">
+                        <div class="card-header">
+                            <h2>Edit Media Kit Details</h2>
+                            <p class="subtitle">Update your analytics in real-time. Brands evaluate these stats directly.</p>
+                        </div>
+                        <form id="mediakit-form" class="simple-form">
+                            <div class="form-row-2">
+                                <div class="form-group">
+                                    <label for="mk-channel-name">Channel / Creator Name</label>
+                                    <input type="text" id="mk-channel-name" value="Harshal Tech Media" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="mk-niche">Niche</label>
+                                    <select id="mk-niche" required>
+                                        <option value="Tech & Coding" selected>Tech & Coding</option>
+                                        <option value="Finance & Tax">Finance & Tax</option>
+                                        <option value="Lifestyle & Vlog">Lifestyle & Vlog</option>
+                                        <option value="Gaming & Esports">Gaming & Esports</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="mk-bio">Short Creator Bio</label>
+                                <textarea id="mk-bio" rows="2" placeholder="Tell brands who you are and why they should sponsor you..."></textarea>
+                            </div>
+
+                            <hr class="form-divider">
+                            <h3>Channel Statistics (Simulated API Sync)</h3>
+                            
+                            <div class="form-row-2">
+                                <div class="form-group">
+                                    <label for="mk-youtube-subs">YouTube Subscribers</label>
+                                    <input type="number" id="mk-youtube-subs" value="45000" min="0" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="mk-instagram-followers">Instagram Followers</label>
+                                    <input type="number" id="mk-instagram-followers" value="15000" min="0" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row-2">
+                                <div class="form-group">
+                                    <label for="mk-avg-views">Average Views / Reel Reach</label>
+                                    <input type="number" id="mk-avg-views" value="12000" min="0" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="mk-engagement-rate">Engagement Rate (%)</label>
+                                    <input type="number" id="mk-engagement-rate" value="6.4" step="0.1" min="0" required>
+                                </div>
+                            </div>
+
+                            <hr class="form-divider">
+                            <h3>Pricing & Rates</h3>
+                            <div class="form-row-2">
+                                <div class="form-group">
+                                    <label for="mk-rate-dedicated">Dedicated Video Rate (₹)</label>
+                                    <input type="number" id="mk-rate-dedicated" value="60000" min="0" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="mk-rate-integrated">Integrated Reel / Post Rate (₹)</label>
+                                    <input type="number" id="mk-rate-integrated" value="25000" min="0" required>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Live Media Kit Preview & Pitch Generator -->
+                    <div class="display-portal-column">
+                        <!-- Media Kit Preview -->
+                        <div class="content-card preview-card">
+                            <div class="preview-badge">Live Public Preview</div>
+                            <div class="media-kit-mockup" id="mediakit-preview-target">
+                                <div class="mk-header">
+                                    <div class="mk-avatar"><i class="fa-solid fa-user-tie"></i></div>
+                                    <div class="mk-titles">
+                                        <h2 id="preview-name">Harshal Tech Media</h2>
+                                        <div class="mk-niche-badge" id="preview-niche">Tech & Coding</div>
+                                    </div>
+                                </div>
+                                <p class="mk-bio-text" id="preview-bio">Helping creators and coders simplify business setups with minimal aesthetics and tools.</p>
+                                
+                                <div class="mk-stats-grid">
+                                    <div class="mk-stat-box">
+                                        <div class="mk-icon yt"><i class="fa-brands fa-youtube"></i></div>
+                                        <span class="mk-stat-val" id="preview-yt-subs">45,000</span>
+                                        <span class="mk-stat-lbl">Subscribers</span>
+                                    </div>
+                                    <div class="mk-stat-box">
+                                        <div class="mk-icon ig"><i class="fa-brands fa-instagram"></i></div>
+                                        <span class="mk-stat-val" id="preview-ig-followers">15,000</span>
+                                        <span class="mk-stat-lbl">Followers</span>
+                                    </div>
+                                    <div class="mk-stat-box">
+                                        <div class="mk-icon reach"><i class="fa-solid fa-chart-line"></i></div>
+                                        <span class="mk-stat-val" id="preview-views">12,000</span>
+                                        <span class="mk-stat-lbl">Avg. Views</span>
+                                    </div>
+                                    <div class="mk-stat-box">
+                                        <div class="mk-icon eng"><i class="fa-solid fa-bolt"></i></div>
+                                        <span class="mk-stat-val" id="preview-engagement">6.4%</span>
+                                        <span class="mk-stat-lbl">Engagement</span>
+                                    </div>
+                                </div>
+
+                                <div class="mk-rates">
+                                    <h3>Deliverable Card Rates</h3>
+                                    <div class="rates-flex">
+                                        <div class="rate-row">
+                                            <span>Dedicated Integration:</span>
+                                            <strong id="preview-rate-dedicated">₹60,000</strong>
+                                        </div>
+                                        <div class="rate-row">
+                                            <span>Integrated Video / Reel:</span>
+                                            <strong id="preview-rate-integrated">₹25,000</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Brand Pitch Generator -->
+                        <div class="content-card pitch-card">
+                            <div class="card-header">
+                                <h2>Automated Pitch Generator</h2>
+                                <p class="subtitle">Select parameters to compose a high-converting sponsor pitch instantly.</p>
+                            </div>
+                            <div class="form-row-3">
+                                <div class="form-group">
+                                    <label for="pitch-target-brand">Brand Name</label>
+                                    <input type="text" id="pitch-target-brand" placeholder="E.g., Hostinger" value="Hostinger">
+                                </div>
+                                <div class="form-group">
+                                    <label for="pitch-tone">Pitch Tone</label>
+                                    <select id="pitch-tone">
+                                        <option value="polite">Professional & Polite</option>
+                                        <option value="bold">Direct & Result-Oriented</option>
+                                        <option value="creative">Creative & Collaborative</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pitch-deliverable">Focus Deliverable</label>
+                                    <select id="pitch-deliverable">
+                                        <option value="dedicated">Dedicated Sponsorship</option>
+                                        <option value="integrated">Reel / Integrated Review</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="generated-pitch-box">
+                                <div class="pitch-content" id="pitch-output-text">
+                                    Press Generate Pitch below to automatically render your tailored sponsorship email.
+                                </div>
+                                <button class="btn btn-secondary btn-sm copy-btn" id="copy-pitch-btn">
+                                    <i class="fa-regular fa-copy"></i> Copy Pitch Email
+                                </button>
+                            </div>
+                            <button class="btn btn-primary" id="generate-pitch-btn">
+                                <i class="fa-solid fa-pen-nib"></i> Generate Custom Pitch
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Branding Assets Tab -->
+            <section id="branding" class="tab-content">
+                <div class="branding-header-info">
+                    <h2>Niche-Specific Minimalist Asset Packs</h2>
+                    <p class="subtitle">Quickly copy high-quality, professional code structures and SVG visual overlays to elevate your video aesthetics.</p>
+                </div>
+                <div class="branding-grid">
+                    <!-- Tech Creator Layout -->
+                    <div class="content-card asset-card">
+                        <div class="card-header">
+                            <div>
+                                <span class="badge asset-badge">Tech & Coding</span>
+                                <h2>Minimalist Coding Card Overlay</h2>
+                            </div>
+                            <i class="fa-solid fa-code tech-accent-icon"></i>
+                        </div>
+                        <div class="asset-preview-container">
+                            <!-- Visual HTML/CSS representation of a coding card overlay -->
+                            <div class="terminal-mock">
+                                <div class="terminal-header">
+                                    <span class="dot red"></span>
+                                    <span class="dot yellow"></span>
+                                    <span class="dot green"></span>
+                                    <span class="terminal-title">quick_sort.py</span>
+                                </div>
+                                <div class="terminal-body">
+                                    <span class="code-line"><span class="kwd">def</span> <span class="fun">quick_sort</span>(arr):</span>
+                                    <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">if</span> len(arr) &lt;= <span class="num">1</span>: <span class="kwd">return</span> arr</span>
+                                    <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;pivot = arr[len(arr) // <span class="num">2</span>]</span>
+                                    <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">return</span> quick_sort([x <span class="kwd">for</span> x <span class="kwd">in</span> arr <span class="kwd">if</span> x &lt; pivot]) + ...</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="asset-description">An elegant editor-card format for videos or slide overlays. Copy the HTML/CSS template code.</p>
+                        <button class="btn btn-secondary btn-block" onclick="copyAssetCode('tech')">
+                            <i class="fa-regular fa-copy"></i> Copy Overlay Code
+                        </button>
+                    </div>
+
+                    <!-- Finance Creator Layout -->
+                    <div class="content-card asset-card">
+                        <div class="card-header">
+                            <div>
+                                <span class="badge asset-badge">Finance & Business</span>
+                                <h2>Premium Growth Metric Card</h2>
+                            </div>
+                            <i class="fa-solid fa-arrow-trend-up fin-accent-icon"></i>
+                        </div>
+                        <div class="asset-preview-container">
+                            <!-- Finance Card -->
+                            <div class="finance-mock-card">
+                                <div class="fin-hdr">
+                                    <span class="fin-title">INVESTMENT PORTFOLIO</span>
+                                    <span class="fin-percentage">+24.8% YTD</span>
+                                </div>
+                                <div class="fin-value">₹8,45,200 <span class="fin-sub">INR</span></div>
+                                <div class="fin-graph-mock">
+                                    <svg viewBox="0 0 200 40" class="mini-sparkline">
+                                        <path d="M0 35 Q30 30 50 15 T100 25 T150 5 T200 12" fill="none" stroke="#10b981" stroke-width="2"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="asset-description">A clean, high-contrast, professional design used to present financial growth in videos or Reels.</p>
+                        <button class="btn btn-secondary btn-block" onclick="copyAssetCode('finance')">
+                            <i class="fa-regular fa-copy"></i> Copy Overlay Code
+                        </button>
+                    </div>
+
+                    <!-- General Overlay / Name Banner -->
+                    <div class="content-card asset-card">
+                        <div class="card-header">
+                            <div>
+                                <span class="badge asset-badge">General Creator</span>
+                                <h2>Minimal Lower Third (Name Tag)</h2>
+                            </div>
+                            <i class="fa-solid fa-address-card gen-accent-icon"></i>
+                        </div>
+                        <div class="asset-preview-container">
+                            <div class="lower-third-mock">
+                                <div class="lt-stripe"></div>
+                                <div class="lt-text">
+                                    <span class="lt-name">HARSHAL TECH</span>
+                                    <span class="lt-sub">@harshal_tech</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="asset-description">A simple slide-in name tag for the bottom-left corner of videos. Clean and distraction-free.</p>
+                        <button class="btn btn-secondary btn-block" onclick="copyAssetCode('lowerthird')">
+                            <i class="fa-regular fa-copy"></i> Copy Overlay Code
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Campaign Tracker Tab -->
+            <section id="campaigns" class="tab-content">
+                <div class="campaign-tracker-actions">
+                    <button class="btn btn-primary" id="add-campaign-btn">
+                        <i class="fa-solid fa-plus"></i> Add New Brand Campaign
+                    </button>
+                </div>
+                
+                <!-- Kanban Board Layout -->
+                <div class="kanban-board">
+                    <!-- Column 1 -->
+                    <div class="kanban-column" data-status="signed">
+                        <div class="column-header">
+                            <h3>Deal Signed / Brief</h3>
+                            <span class="column-count" id="count-signed">0</span>
+                        </div>
+                        <div class="kanban-cards" id="list-signed">
+                            <!-- Dynamic items -->
+                        </div>
+                    </div>
+
+                    <!-- Column 2 -->
+                    <div class="kanban-column" data-status="script">
+                        <div class="column-header">
+                            <h3>Script Validation</h3>
+                            <span class="column-count" id="count-script">0</span>
+                        </div>
+                        <div class="kanban-cards" id="list-script">
+                            <!-- Dynamic items -->
+                        </div>
+                    </div>
+
+                    <!-- Column 3 -->
+                    <div class="kanban-column" data-status="draft">
+                        <div class="column-header">
+                            <h3>Draft Review Sent</h3>
+                            <span class="column-count" id="count-draft">0</span>
+                        </div>
+                        <div class="kanban-cards" id="list-draft">
+                            <!-- Dynamic items -->
+                        </div>
+                    </div>
+
+                    <!-- Column 4 -->
+                    <div class="kanban-column" data-status="published">
+                        <div class="column-header">
+                            <h3>Published & Invoiced</h3>
+                            <span class="column-count" id="count-published">0</span>
+                        </div>
+                        <div class="kanban-cards" id="list-published">
+                            <!-- Dynamic items -->
+                        </div>
+                    </div>
+
+                    <!-- Column 5 -->
+                    <div class="kanban-column" data-status="cleared">
+                        <div class="column-header">
+                            <h3>Payment Completed</h3>
+                            <span class="column-count" id="count-cleared">0</span>
+                        </div>
+                        <div class="kanban-cards" id="list-cleared">
+                            <!-- Dynamic items -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Welcome DM Setup Tab -->
+            <section id="welcomedm" class="tab-content">
+                <div class="welcomedm-layout">
+                    <!-- Settings Side -->
+                    <div class="content-card config-panel">
+                        <div class="card-header">
+                            <h2>Anti-Spam Welcome DM Settings</h2>
+                            <p class="subtitle">Avoid platform shadowbans. Change message variants and add human-like time delays.</p>
+                        </div>
+                        <form id="dm-config-form" class="simple-form">
+                            <div class="form-group">
+                                <label><strong>Message Variation A</strong> (Required)</label>
+                                <textarea id="dm-var-a" rows="3" required placeholder="Hey {name}! Thanks for joining. What type of content interests you the most?"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label><strong>Message Variation B</strong> (Recommended to avoid spam flag)</label>
+                                <textarea id="dm-var-b" rows="3" placeholder="Welcome aboard, {name}! Glad to connect. Let me know if you need help with creator resources."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label><strong>Message Variation C</strong> (Recommended to avoid spam flag)</label>
+                                <textarea id="dm-var-c" rows="3" placeholder="Hello {name}! Thanks for the follow. I post weekly tutorials. Let me know your feedback!"></textarea>
+                            </div>
+
+                            <hr class="form-divider">
+
+                            <div class="form-row-2">
+                                <div class="form-group">
+                                    <label for="dm-delay">Random Human Delay</label>
+                                    <select id="dm-delay">
+                                        <option value="5">1 - 5 Minutes (Safe)</option>
+                                        <option value="15" selected>5 - 15 Minutes (Very Safe)</option>
+                                        <option value="0">No Delay (High Spam Risk)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Spam Safety Index</label>
+                                    <div class="safety-meter-wrapper">
+                                        <div class="safety-indicator-meter" id="safety-meter-fill" style="width: 85%; background-color: #10b981;"></div>
+                                    </div>
+                                    <span class="safety-status-label" id="safety-meter-text">Very Safe (Multiple variants + Human delay)</span>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Save Configuration</button>
+                        </form>
+                    </div>
+
+                    <!-- Live Simulator Side -->
+                    <div class="content-card simulator-panel">
+                        <div class="card-header">
+                            <h2>Interactive DM Simulator</h2>
+                            <p class="subtitle">Trigger a mock follow notification to watch your automated anti-spam queue process the DM.</p>
+                        </div>
+                        
+                        <div class="sim-controls">
+                            <div class="input-action-row">
+                                <input type="text" id="sim-username" value="Aarav_Sharma" placeholder="Enter follower username">
+                                <button class="btn btn-secondary" id="sim-follow-btn">
+                                    <i class="fa-solid fa-user-plus"></i> Trigger Mock Follow
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Chat Mockup -->
+                        <div class="instagram-chat-box">
+                            <div class="chat-header">
+                                <div class="chat-avatar"><i class="fa-brands fa-instagram"></i></div>
+                                <div class="chat-username" id="chat-header-name">Aarav_Sharma</div>
+                            </div>
+                            <div class="chat-messages-body" id="chat-messages-container">
+                                <div class="chat-info-banner">No active conversation simulation. Press Trigger Mock Follow above.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Invoice Print Modal -->
+    <div class="modal-overlay" id="invoice-modal">
+        <div class="modal-card print-modal-card">
+            <div class="modal-close-header">
+                <h2>Invoice Print Preview</h2>
+                <button class="close-modal-btn" onclick="closeModal('invoice-modal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-print-body" id="invoice-print-area-content">
+                <!-- Content injected via JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('invoice-modal')">Close</button>
+                <button class="btn btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Invoice</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Campaign Modal -->
+    <div class="modal-overlay" id="campaign-modal">
+        <div class="modal-card">
+            <div class="modal-close-header">
+                <h2>Add New Brand Campaign</h2>
+                <button class="close-modal-btn" onclick="closeModal('campaign-modal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="campaign-modal-form" class="simple-form">
+                <div class="form-group">
+                    <label for="c-brand-name">Brand Name</label>
+                    <input type="text" id="c-brand-name" placeholder="E.g., Mamaearth India" required>
+                </div>
+                <div class="form-group">
+                    <label for="c-campaign-title">Campaign Title / Deliverable</label>
+                    <input type="text" id="c-campaign-title" placeholder="E.g., Dedicated YouTube Video" required>
+                </div>
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="c-amount">Contract Value (₹)</label>
+                        <input type="number" id="c-amount" placeholder="50000" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="c-deadline">Deadline Date</label>
+                        <input type="date" id="c-deadline" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="c-status">Campaign Phase</label>
+                    <select id="c-status">
+                        <option value="signed" selected>Deal Signed / Brief</option>
+                        <option value="script">Script Validation</option>
+                        <option value="draft">Draft Sent for Approval</option>
+                        <option value="published">Published & Invoiced</option>
+                        <option value="cleared">Payment Completed</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('campaign-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Campaign</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Code Asset View Modal -->
+    <div class="modal-overlay" id="code-asset-modal">
+        <div class="modal-card code-view-modal">
+            <div class="modal-close-header">
+                <h2 id="asset-modal-title">HTML & CSS Asset Code</h2>
+                <button class="close-modal-btn" onclick="closeModal('code-asset-modal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="code-view-body">
+                <p class="code-view-instructions">Paste this code directly into your video software, web layouts, or OBS studio overlays.</p>
+                <div class="code-block-wrapper">
+                    <pre><code id="asset-code-content"></code></pre>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('code-asset-modal')">Close</button>
+                <button class="btn btn-primary" id="asset-modal-copy-btn"><i class="fa-regular fa-copy"></i> Copy Code</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
 </html>
