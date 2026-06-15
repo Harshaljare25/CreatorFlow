@@ -1,0 +1,13 @@
+{
+  "name": "creatorflow",
+  "version": "1.0.0",
+  "description": "Simple Creator Business Suite",
+  "main": "frontend/index.html",
+  "scripts": {
+    "dev": "npx serve frontend"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}
