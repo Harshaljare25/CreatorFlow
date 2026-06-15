@@ -267,7 +267,7 @@
                             <h3>From (Your Details)</h3>
                             <div class="form-group">
                                 <label for="inv-creator-name">Creator / Business Name</label>
-                                <input type="text" id="inv-creator-name" placeholder="E.g., Harshal Tech Media" required>
+                                <input type="text" id="inv-creator-name" placeholder="E.g., My Creator Channel" required>
                             </div>
                             <div class="form-row-2">
                                 <div class="form-group">
@@ -422,12 +422,13 @@
                             <div class="form-row-2">
                                 <div class="form-group">
                                     <label for="mk-channel-name">Channel / Creator Name</label>
-                                    <input type="text" id="mk-channel-name" value="Harshal Tech Media" required>
+                                    <input type="text" id="mk-channel-name" value="" placeholder="E.g., My Creator Channel" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="mk-niche">Niche</label>
                                     <select id="mk-niche" required>
-                                        <option value="Tech & Coding" selected>Tech & Coding</option>
+                                        <option value="" disabled selected>Select Niche</option>
+                                        <option value="Tech & Coding">Tech & Coding</option>
                                         <option value="Finance & Tax">Finance & Tax</option>
                                         <option value="Lifestyle & Vlog">Lifestyle & Vlog</option>
                                         <option value="Gaming & Esports">Gaming & Esports</option>
@@ -445,22 +446,22 @@
                             <div class="form-row-2">
                                 <div class="form-group">
                                     <label for="mk-youtube-subs">YouTube Subscribers</label>
-                                    <input type="number" id="mk-youtube-subs" value="45000" min="0" required>
+                                    <input type="number" id="mk-youtube-subs" value="0" min="0" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="mk-instagram-followers">Instagram Followers</label>
-                                    <input type="number" id="mk-instagram-followers" value="15000" min="0" required>
+                                    <input type="number" id="mk-instagram-followers" value="0" min="0" required>
                                 </div>
                             </div>
 
                             <div class="form-row-2">
                                 <div class="form-group">
                                     <label for="mk-avg-views">Average Views / Reel Reach</label>
-                                    <input type="number" id="mk-avg-views" value="12000" min="0" required>
+                                    <input type="number" id="mk-avg-views" value="0" min="0" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="mk-engagement-rate">Engagement Rate (%)</label>
-                                    <input type="number" id="mk-engagement-rate" value="6.4" step="0.1" min="0" required>
+                                    <input type="number" id="mk-engagement-rate" value="0.0" step="0.1" min="0" required>
                                 </div>
                             </div>
 
@@ -469,11 +470,11 @@
                             <div class="form-row-2">
                                 <div class="form-group">
                                     <label for="mk-rate-dedicated">Dedicated Video Rate (₹)</label>
-                                    <input type="number" id="mk-rate-dedicated" value="60000" min="0" required>
+                                    <input type="number" id="mk-rate-dedicated" value="0" min="0" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="mk-rate-integrated">Integrated Reel / Post Rate (₹)</label>
-                                    <input type="number" id="mk-rate-integrated" value="25000" min="0" required>
+                                    <input type="number" id="mk-rate-integrated" value="0" min="0" required>
                                 </div>
                             </div>
                         </form>
@@ -488,31 +489,31 @@
                                 <div class="mk-header">
                                     <div class="mk-avatar"><i class="fa-solid fa-user-tie"></i></div>
                                     <div class="mk-titles">
-                                        <h2 id="preview-name">Harshal Tech Media</h2>
-                                        <div class="mk-niche-badge" id="preview-niche">Tech & Coding</div>
+                                        <h2 id="preview-name">My Creator Channel</h2>
+                                        <div class="mk-niche-badge" id="preview-niche">Select Niche</div>
                                     </div>
                                 </div>
-                                <p class="mk-bio-text" id="preview-bio">Helping creators and coders simplify business setups with minimal aesthetics and tools.</p>
+                                <p class="mk-bio-text" id="preview-bio">Your creator bio will appear here...</p>
                                 
                                 <div class="mk-stats-grid">
                                     <div class="mk-stat-box">
                                         <div class="mk-icon yt"><i class="fa-brands fa-youtube"></i></div>
-                                        <span class="mk-stat-val" id="preview-yt-subs">45,000</span>
+                                        <span class="mk-stat-val" id="preview-yt-subs">0</span>
                                         <span class="mk-stat-lbl">Subscribers</span>
                                     </div>
                                     <div class="mk-stat-box">
                                         <div class="mk-icon ig"><i class="fa-brands fa-instagram"></i></div>
-                                        <span class="mk-stat-val" id="preview-ig-followers">15,000</span>
+                                        <span class="mk-stat-val" id="preview-ig-followers">0</span>
                                         <span class="mk-stat-lbl">Followers</span>
                                     </div>
                                     <div class="mk-stat-box">
                                         <div class="mk-icon reach"><i class="fa-solid fa-chart-line"></i></div>
-                                        <span class="mk-stat-val" id="preview-views">12,000</span>
+                                        <span class="mk-stat-val" id="preview-views">0</span>
                                         <span class="mk-stat-lbl">Avg. Views</span>
                                     </div>
                                     <div class="mk-stat-box">
                                         <div class="mk-icon eng"><i class="fa-solid fa-bolt"></i></div>
-                                        <span class="mk-stat-val" id="preview-engagement">6.4%</span>
+                                        <span class="mk-stat-val" id="preview-engagement">0.0%</span>
                                         <span class="mk-stat-lbl">Engagement</span>
                                     </div>
                                 </div>
@@ -522,11 +523,11 @@
                                     <div class="rates-flex">
                                         <div class="rate-row">
                                             <span>Dedicated Integration:</span>
-                                            <strong id="preview-rate-dedicated">₹60,000</strong>
+                                            <strong id="preview-rate-dedicated">₹0</strong>
                                         </div>
                                         <div class="rate-row">
                                             <span>Integrated Video / Reel:</span>
-                                            <strong id="preview-rate-integrated">₹25,000</strong>
+                                            <strong id="preview-rate-integrated">₹0</strong>
                                         </div>
                                     </div>
                                 </div>
