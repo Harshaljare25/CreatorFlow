@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div class="app-container">
         <!-- Sidebar Navigation -->
@@ -46,8 +48,8 @@
                 <p class="creator-label">Business Suite for Creators</p>
                 <div class="user-profile-summary">
                     <div class="avatar"><i class="fa-solid fa-user"></i></div>
-                    <div class="user-info">
-                        <p class="user-name" id="profile-name-summary">Your Channel Name</p>
+                    <div class="user-info
+                        <p class=" user-name" id="profile-name-summary">Your Channel Name</p>
                         <p class="user-niche" id="profile-niche-summary">Tech & Lifestyle</p>
                     </div>
                 </div>
@@ -62,7 +64,8 @@
             <header class="main-header">
                 <div class="header-title-wrapper">
                     <h1 id="page-title">Dashboard Overview</h1>
-                    <p id="page-subtitle" class="subtitle">Monitor your revenue, pending deliverables, and business metrics.</p>
+                    <p id="page-subtitle" class="subtitle">Monitor your revenue, pending deliverables, and business
+                        metrics.</p>
                 </div>
                 <div class="current-date" id="live-date">June 13, 2026</div>
             </header>
@@ -115,11 +118,11 @@
                                 <line x1="50" y1="80" x2="470" y2="80" class="chart-grid-line" />
                                 <line x1="50" y1="130" x2="470" y2="130" class="chart-grid-line" />
                                 <line x1="50" y1="170" x2="470" y2="170" class="chart-grid-line" />
-                                
+
                                 <!-- Line and Points -->
-                                <polyline fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
-                                    points="80,160 150,140 220,120 290,70 360,90 430,40" />
-                                
+                                <polyline fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round"
+                                    stroke-linejoin="round" points="80,160 150,140 220,120 290,70 360,90 430,40" />
+
                                 <circle cx="80" cy="160" r="4.5" fill="#2563eb" stroke="#ffffff" stroke-width="1.5" />
                                 <circle cx="150" cy="140" r="4.5" fill="#2563eb" stroke="#ffffff" stroke-width="1.5" />
                                 <circle cx="220" cy="120" r="4.5" fill="#2563eb" stroke="#ffffff" stroke-width="1.5" />
@@ -153,7 +156,8 @@
                         </div>
                         <div class="campaign-deadline-list" id="dashboard-campaign-deadlines">
                             <!-- Inserted dynamically via JavaScript -->
-                            <div class="no-data-msg">No active campaigns scheduled. Add them in the Campaign Tracker.</div>
+                            <div class="no-data-msg">No active campaigns scheduled. Add them in the Campaign Tracker.
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -183,12 +187,13 @@
                             </div>
 
                             <hr class="form-divider">
-                            
+
                             <!-- Creator Details -->
                             <h3>From (Your Details)</h3>
                             <div class="form-group">
                                 <label for="inv-creator-name">Creator / Business Name</label>
-                                <input type="text" id="inv-creator-name" placeholder="E.g., My Creator Channel" required>
+                                <input type="text" id="inv-creator-name" placeholder="E.g., My Creator Channel"
+                                    required>
                             </div>
                             <div class="form-row-2">
                                 <div class="form-group">
@@ -240,7 +245,8 @@
                             <h3>Deliverables & Pricing</h3>
                             <div class="form-group">
                                 <label for="inv-item-desc">Item Description</label>
-                                <input type="text" id="inv-item-desc" placeholder="E.g., 1x Dedicated YouTube Video Integration" required>
+                                <input type="text" id="inv-item-desc"
+                                    placeholder="E.g., 1x Dedicated YouTube Video Integration" required>
                             </div>
                             <div class="form-row-2">
                                 <div class="form-group">
@@ -310,12 +316,15 @@
                         <div class="content-card">
                             <div class="card-header">
                                 <h2>Easy Payment Reminders</h2>
-                                <p class="subtitle">Quickly copy and send these follow-ups when brands delay your payment.</p>
+                                <p class="subtitle">Quickly copy and send these follow-ups when brands delay your
+                                    payment.</p>
                             </div>
                             <div class="reminder-selector">
-                                <button class="reminder-tab active" data-reminder-type="polite">Polite Reminder (Due soon)</button>
+                                <button class="reminder-tab active" data-reminder-type="polite">Polite Reminder (Due
+                                    soon)</button>
                                 <button class="reminder-tab" data-reminder-type="firm">Firm Reminder (Overdue)</button>
-                                <button class="reminder-tab" data-reminder-type="urgent">Urgent Follow-up (14+ Days Overdue)</button>
+                                <button class="reminder-tab" data-reminder-type="urgent">Urgent Follow-up (14+ Days
+                                    Overdue)</button>
                             </div>
                             <div class="reminder-box">
                                 <div class="reminder-content" id="reminder-text-box">
@@ -337,13 +346,15 @@
                     <div class="content-card input-form-card">
                         <div class="card-header">
                             <h2>Edit Media Kit Details</h2>
-                            <p class="subtitle">Update your analytics in real-time. Brands evaluate these stats directly.</p>
+                            <p class="subtitle">Update your analytics in real-time. Brands evaluate these stats
+                                directly.</p>
                         </div>
                         <form id="mediakit-form" class="simple-form">
                             <div class="form-row-2">
                                 <div class="form-group">
                                     <label for="mk-channel-name">Channel / Creator Name</label>
-                                    <input type="text" id="mk-channel-name" value="" placeholder="E.g., My Creator Channel" required>
+                                    <input type="text" id="mk-channel-name" value=""
+                                        placeholder="E.g., My Creator Channel" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="mk-niche">Niche</label>
@@ -358,12 +369,33 @@
                             </div>
                             <div class="form-group">
                                 <label for="mk-bio">Short Creator Bio</label>
-                                <textarea id="mk-bio" rows="2" placeholder="Tell brands who you are and why they should sponsor you..."></textarea>
+                                <textarea id="mk-bio" rows="2"
+                                    placeholder="Tell brands who you are and why they should sponsor you..."></textarea>
                             </div>
 
                             <hr class="form-divider">
-                            <h3>Channel Statistics (Simulated API Sync)</h3>
-                            
+                            <h3>Social Media Sync</h3>
+                            <div class="form-row-2">
+                                <div class="form-group">
+                                    <label for="mk-youtube-url"><i class="fa-brands fa-youtube" style="color: #ff0000; margin-right: 4px;"></i> YouTube Handle / URL</label>
+                                    <input type="text" id="mk-youtube-url" placeholder="E.g., @MrBeast or channel link">
+                                </div>
+                                <div class="form-group">
+                                    <label for="mk-instagram-url"><i class="fa-brands fa-instagram" style="color: #e1306c; margin-right: 4px;"></i> Instagram Username / URL</label>
+                                    <input type="text" id="mk-instagram-url" placeholder="E.g., @cristiano or profile link">
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-top: 4px;">
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-fetch-socials" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="fa-solid fa-rotate" id="fetch-socials-icon"></i>
+                                    <span id="fetch-socials-text">Fetch Live Followers & Subscribers</span>
+                                </button>
+                                <div id="fetch-socials-error" style="color: var(--danger); font-size: 11px; margin-top: 4px; display: none;"></div>
+                            </div>
+
+                            <hr class="form-divider">
+                            <h3>Channel Statistics</h3>
+
                             <div class="form-row-2">
                                 <div class="form-group">
                                     <label for="mk-youtube-subs">YouTube Subscribers</label>
@@ -382,7 +414,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="mk-engagement-rate">Engagement Rate (%)</label>
-                                    <input type="number" id="mk-engagement-rate" value="0.0" step="0.1" min="0" required>
+                                    <input type="number" id="mk-engagement-rate" value="0.0" step="0.1" min="0"
+                                        required>
                                 </div>
                             </div>
 
@@ -415,7 +448,7 @@
                                     </div>
                                 </div>
                                 <p class="mk-bio-text" id="preview-bio">Your creator bio will appear here...</p>
-                                
+
                                 <div class="mk-stats-grid">
                                     <div class="mk-stat-box">
                                         <div class="mk-icon yt"><i class="fa-brands fa-youtube"></i></div>
@@ -459,12 +492,14 @@
                         <div class="content-card pitch-card">
                             <div class="card-header">
                                 <h2>Automated Pitch Generator</h2>
-                                <p class="subtitle">Select parameters to compose a high-converting sponsor pitch instantly.</p>
+                                <p class="subtitle">Select parameters to compose a high-converting sponsor pitch
+                                    instantly.</p>
                             </div>
                             <div class="form-row-3">
                                 <div class="form-group">
                                     <label for="pitch-target-brand">Brand Name</label>
-                                    <input type="text" id="pitch-target-brand" placeholder="E.g., Hostinger" value="Hostinger">
+                                    <input type="text" id="pitch-target-brand" placeholder="E.g., Hostinger"
+                                        value="Hostinger">
                                 </div>
                                 <div class="form-group">
                                     <label for="pitch-tone">Pitch Tone</label>
@@ -502,7 +537,8 @@
             <section id="branding" class="tab-content">
                 <div class="branding-header-info">
                     <h2>Niche-Specific Minimalist Asset Packs</h2>
-                    <p class="subtitle">Quickly copy high-quality, professional code structures and SVG visual overlays to elevate your video aesthetics.</p>
+                    <p class="subtitle">Quickly copy high-quality, professional code structures and SVG visual overlays
+                        to elevate your video aesthetics.</p>
                 </div>
                 <div class="branding-grid">
                     <!-- Tech Creator Layout -->
@@ -524,14 +560,20 @@
                                     <span class="terminal-title">quick_sort.py</span>
                                 </div>
                                 <div class="terminal-body">
-                                    <span class="code-line"><span class="kwd">def</span> <span class="fun">quick_sort</span>(arr):</span>
-                                    <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">if</span> len(arr) &lt;= <span class="num">1</span>: <span class="kwd">return</span> arr</span>
-                                    <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;pivot = arr[len(arr) // <span class="num">2</span>]</span>
-                                    <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">return</span> quick_sort([x <span class="kwd">for</span> x <span class="kwd">in</span> arr <span class="kwd">if</span> x &lt; pivot]) + ...</span>
+                                    <span class="code-line"><span class="kwd">def</span> <span
+                                            class="fun">quick_sort</span>(arr):</span>
+                                    <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">if</span> len(arr)
+                                        &lt;= <span class="num">1</span>: <span class="kwd">return</span> arr</span>
+                                    <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;pivot = arr[len(arr) // <span
+                                            class="num">2</span>]</span>
+                                    <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kwd">return</span>
+                                        quick_sort([x <span class="kwd">for</span> x <span class="kwd">in</span> arr
+                                        <span class="kwd">if</span> x &lt; pivot]) + ...</span>
                                 </div>
                             </div>
                         </div>
-                        <p class="asset-description">An elegant editor-card format for videos or slide overlays. Copy the HTML/CSS template code.</p>
+                        <p class="asset-description">An elegant editor-card format for videos or slide overlays. Copy
+                            the HTML/CSS template code.</p>
                         <button class="btn btn-secondary btn-block" onclick="copyAssetCode('tech')">
                             <i class="fa-regular fa-copy"></i> Copy Overlay Code
                         </button>
@@ -556,12 +598,14 @@
                                 <div class="fin-value">₹8,45,200 <span class="fin-sub">INR</span></div>
                                 <div class="fin-graph-mock">
                                     <svg viewBox="0 0 200 40" class="mini-sparkline">
-                                        <path d="M0 35 Q30 30 50 15 T100 25 T150 5 T200 12" fill="none" stroke="#10b981" stroke-width="2"/>
+                                        <path d="M0 35 Q30 30 50 15 T100 25 T150 5 T200 12" fill="none" stroke="#10b981"
+                                            stroke-width="2" />
                                     </svg>
                                 </div>
                             </div>
                         </div>
-                        <p class="asset-description">A clean, high-contrast, professional design used to present financial growth in videos or Reels.</p>
+                        <p class="asset-description">A clean, high-contrast, professional design used to present
+                            financial growth in videos or Reels.</p>
                         <button class="btn btn-secondary btn-block" onclick="copyAssetCode('finance')">
                             <i class="fa-regular fa-copy"></i> Copy Overlay Code
                         </button>
@@ -585,7 +629,8 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="asset-description">A simple slide-in name tag for the bottom-left corner of videos. Clean and distraction-free.</p>
+                        <p class="asset-description">A simple slide-in name tag for the bottom-left corner of videos.
+                            Clean and distraction-free.</p>
                         <button class="btn btn-secondary btn-block" onclick="copyAssetCode('lowerthird')">
                             <i class="fa-regular fa-copy"></i> Copy Overlay Code
                         </button>
@@ -600,7 +645,7 @@
                         <i class="fa-solid fa-plus"></i> Add New Brand Campaign
                     </button>
                 </div>
-                
+
                 <!-- Kanban Board Layout -->
                 <div class="kanban-board">
                     <!-- Column 1 -->
@@ -668,14 +713,16 @@
         <div class="modal-card print-modal-card">
             <div class="modal-close-header">
                 <h2>Invoice Print Preview</h2>
-                <button class="close-modal-btn" onclick="closeModal('invoice-modal')"><i class="fa-solid fa-xmark"></i></button>
+                <button class="close-modal-btn" onclick="closeModal('invoice-modal')"><i
+                        class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-print-body" id="invoice-print-area-content">
                 <!-- Content injected via JS -->
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('invoice-modal')">Close</button>
-                <button class="btn btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Invoice</button>
+                <button class="btn btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print
+                    Invoice</button>
             </div>
         </div>
     </div>
@@ -685,7 +732,8 @@
         <div class="modal-card">
             <div class="modal-close-header">
                 <h2>Add New Brand Campaign</h2>
-                <button class="close-modal-btn" onclick="closeModal('campaign-modal')"><i class="fa-solid fa-xmark"></i></button>
+                <button class="close-modal-btn" onclick="closeModal('campaign-modal')"><i
+                        class="fa-solid fa-xmark"></i></button>
             </div>
             <form id="campaign-modal-form" class="simple-form">
                 <div class="form-group">
@@ -717,7 +765,8 @@
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('campaign-modal')">Cancel</button>
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('campaign-modal')">Cancel</button>
                     <button type="submit" class="btn btn-primary">Create Campaign</button>
                 </div>
             </form>
@@ -729,21 +778,25 @@
         <div class="modal-card code-view-modal">
             <div class="modal-close-header">
                 <h2 id="asset-modal-title">HTML & CSS Asset Code</h2>
-                <button class="close-modal-btn" onclick="closeModal('code-asset-modal')"><i class="fa-solid fa-xmark"></i></button>
+                <button class="close-modal-btn" onclick="closeModal('code-asset-modal')"><i
+                        class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="code-view-body">
-                <p class="code-view-instructions">Paste this code directly into your video software, web layouts, or OBS studio overlays.</p>
+                <p class="code-view-instructions">Paste this code directly into your video software, web layouts, or OBS
+                    studio overlays.</p>
                 <div class="code-block-wrapper">
                     <pre><code id="asset-code-content"></code></pre>
                 </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('code-asset-modal')">Close</button>
-                <button class="btn btn-primary" id="asset-modal-copy-btn"><i class="fa-regular fa-copy"></i> Copy Code</button>
+                <button class="btn btn-primary" id="asset-modal-copy-btn"><i class="fa-regular fa-copy"></i> Copy
+                    Code</button>
             </div>
         </div>
     </div>
 
     <script type="module" src="app.js"></script>
 </body>
+
 </html>

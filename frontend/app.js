@@ -7,7 +7,9 @@ import {
     signInWithPopup, 
     GoogleAuthProvider, 
     signOut, 
-    onAuthStateChanged 
+    onAuthStateChanged,
+    setPersistence,
+    browserSessionPersistence
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { 
     getFirestore, 
@@ -29,6 +31,9 @@ if (isFirebaseConfigured) {
     try {
         app = initializeApp(firebaseConfig);
         auth = getAuth(app);
+        // Set persistence to session (clears session when browser tab is closed)
+        setPersistence(auth, browserSessionPersistence)
+            .catch((err) => console.error("Error setting persistence:", err));
         firestoreDb = getFirestore(app);
     } catch (err) {
         console.error("Firebase initialization failed:", err);
@@ -41,6 +46,8 @@ let state = {
         name: "",
         niche: "",
         bio: "",
+        youtubeUrl: "",
+        instagramUrl: "",
         youtubeSubs: 0,
         instagramFollowers: 0,
         avgViews: 0,
@@ -70,6 +77,8 @@ function resetStateToDefault() {
             name: "",
             niche: "",
             bio: "",
+            youtubeUrl: "",
+            instagramUrl: "",
             youtubeSubs: 0,
             instagramFollowers: 0,
             avgViews: 0,
@@ -681,19 +690,24 @@ function initializeMediaKitForm() {
     // Bind form changes to sync to preview in real-time
     const inputs = form.querySelectorAll('input, select, textarea');
     inputs.forEach(input => {
-        input.addEventListener('input', syncMediaKitPreview);
+        // Only bind input event listeners to non-button fields
+        if (input.id !== 'btn-fetch-socials') {
+            input.addEventListener('input', syncMediaKitPreview);
+        }
     });
 
     // Populate fields from state
-    document.getElementById('mk-channel-name').value = state.profile.name;
-    document.getElementById('mk-niche').value = state.profile.niche;
-    document.getElementById('mk-bio').value = state.profile.bio;
-    document.getElementById('mk-youtube-subs').value = state.profile.youtubeSubs;
-    document.getElementById('mk-instagram-followers').value = state.profile.instagramFollowers;
-    document.getElementById('mk-avg-views').value = state.profile.avgViews;
-    document.getElementById('mk-engagement-rate').value = state.profile.engagementRate;
-    document.getElementById('mk-rate-dedicated').value = state.profile.rateDedicated;
-    document.getElementById('mk-rate-integrated').value = state.profile.rateIntegrated;
+    document.getElementById('mk-channel-name').value = state.profile.name || "";
+    document.getElementById('mk-niche').value = state.profile.niche || "";
+    document.getElementById('mk-bio').value = state.profile.bio || "";
+    document.getElementById('mk-youtube-url').value = state.profile.youtubeUrl || "";
+    document.getElementById('mk-instagram-url').value = state.profile.instagramUrl || "";
+    document.getElementById('mk-youtube-subs').value = state.profile.youtubeSubs || 0;
+    document.getElementById('mk-instagram-followers').value = state.profile.instagramFollowers || 0;
+    document.getElementById('mk-avg-views').value = state.profile.avgViews || 0;
+    document.getElementById('mk-engagement-rate').value = state.profile.engagementRate || 0.0;
+    document.getElementById('mk-rate-dedicated').value = state.profile.rateDedicated || 0;
+    document.getElementById('mk-rate-integrated').value = state.profile.rateIntegrated || 0;
 
     syncMediaKitPreview();
 }
@@ -703,6 +717,8 @@ function syncMediaKitPreview() {
     const name = document.getElementById('mk-channel-name').value;
     const niche = document.getElementById('mk-niche').value;
     const bio = document.getElementById('mk-bio').value;
+    const youtubeUrl = document.getElementById('mk-youtube-url').value;
+    const instagramUrl = document.getElementById('mk-instagram-url').value;
     const yt = parseInt(document.getElementById('mk-youtube-subs').value) || 0;
     const ig = parseInt(document.getElementById('mk-instagram-followers').value) || 0;
     const views = parseInt(document.getElementById('mk-avg-views').value) || 0;
@@ -713,6 +729,7 @@ function syncMediaKitPreview() {
     // Update State
     state.profile = {
         name, niche, bio,
+        youtubeUrl, instagramUrl,
         youtubeSubs: yt,
         instagramFollowers: ig,
         avgViews: views,
@@ -723,9 +740,9 @@ function syncMediaKitPreview() {
     saveState();
 
     // Render Preview
-    document.getElementById('preview-name').innerText = name;
-    document.getElementById('preview-niche').innerText = niche;
-    document.getElementById('preview-bio').innerText = bio;
+    document.getElementById('preview-name').innerText = name || "My Creator Channel";
+    document.getElementById('preview-niche').innerText = niche || "Select Niche";
+    document.getElementById('preview-bio').innerText = bio || "Your creator bio will appear here...";
     
     document.getElementById('preview-yt-subs').innerText = new Intl.NumberFormat('en-IN').format(yt);
     document.getElementById('preview-ig-followers').innerText = new Intl.NumberFormat('en-IN').format(ig);
@@ -736,9 +753,223 @@ function syncMediaKitPreview() {
     document.getElementById('preview-rate-integrated').innerText = formatCurrency(rateIntegrated);
 
     // Sync header profile names
-    document.getElementById('profile-name-summary').innerText = name;
-    document.getElementById('profile-niche-summary').innerText = niche;
+    document.getElementById('profile-name-summary').innerText = name || "Your Channel Name";
+    document.getElementById('profile-niche-summary').innerText = niche || "Tech & Lifestyle";
 }
+
+// Helpers for social media sync scraping
+function getYoutubeFetchUrl(input) {
+    if (!input) return '';
+    input = input.trim();
+    if (input.startsWith('http://') || input.startsWith('https://')) {
+        return input;
+    }
+    if (input.includes('youtube.com')) {
+        return 'https://' + input;
+    }
+    if (input.startsWith('@')) {
+        return `https://www.youtube.com/${input}`;
+    }
+    if (input.startsWith('UC') && input.length === 24) {
+        return `https://www.youtube.com/channel/${input}`;
+    }
+    return `https://www.youtube.com/@${input}`;
+}
+
+function getInstagramFetchUrl(input) {
+    if (!input) return '';
+    input = input.trim();
+    if (input.startsWith('http://') || input.startsWith('https://')) {
+        return input;
+    }
+    if (input.includes('instagram.com')) {
+        return 'https://' + input;
+    }
+    if (input.startsWith('@')) {
+        return `https://www.instagram.com/${input.substring(1)}`;
+    }
+    return `https://www.instagram.com/${input}`;
+}
+
+function parseSocialCount(valStr) {
+    if (!valStr) return 0;
+    // Clean commas and lowercase
+    let clean = valStr.replace(/,/g, '').trim().toLowerCase();
+    
+    // Extract numeric start
+    let match = clean.match(/^([\d\.]+)/);
+    if (!match) return 0;
+    let val = parseFloat(match[1]);
+    
+    // Determine suffix/multiplier
+    let suffix = '';
+    let suffixMatch = clean.match(/^[\d\.]+\s*([a-z]+)/);
+    if (suffixMatch) {
+        suffix = suffixMatch[1];
+    }
+    
+    if (suffix.startsWith('m')) {
+        val *= 1000000;
+    } else if (suffix.startsWith('k')) {
+        val *= 1000;
+    } else if (suffix.startsWith('b')) {
+        val *= 1000000000;
+    } else if (suffix.startsWith('lakh')) {
+        val *= 100000;
+    } else if (suffix.startsWith('crore')) {
+        val *= 10000000;
+    }
+    
+    return Math.round(val);
+}
+
+function extractYoutubeSubscribers(html) {
+    if (!html) return null;
+    // Regex 1: "label":"260M subscribers"
+    let match = html.match(/"label"\s*:\s*"([^"]+ subscribers)"/i);
+    if (match) {
+        return parseSocialCount(match[1]);
+    }
+    // Regex 2: subscriberCountText -> accessibility -> accessibilityData -> label
+    match = html.match(/"subscriberCountText"\s*:\s*\{\s*"accessibility"\s*:\s*\{\s*"accessibilityData"\s*:\s*\{\s*"label"\s*:\s*"([^"]+)"/i);
+    if (match) {
+        return parseSocialCount(match[1]);
+    }
+    // Regex 3: Simple search for "X subscribers"
+    match = html.match(/([\d\.,\s]+[kKmMbB]?(?:\s+million|\s+billion|\s+thousand|\s+lakh|\s+crore)?\s+subscribers)/i);
+    if (match) {
+        return parseSocialCount(match[1]);
+    }
+    return null;
+}
+
+function extractInstagramFollowers(html) {
+    if (!html) return null;
+    // Regex 1: content="88.5k Followers, 1,412 Following"
+    let match = html.match(/content="([^"]+ Followers)/i);
+    if (match) {
+        return parseSocialCount(match[1]);
+    }
+    // Regex 2: content="88.5k Followers"
+    match = html.match(/([0-9kKmM\.,\s]+(?:million|billion|lakh|crore)?\s*followers)/i);
+    if (match) {
+        return parseSocialCount(match[1]);
+    }
+    return null;
+}
+
+async function fetchHtmlWithProxy(targetUrl) {
+    // Try Proxy 1: corsproxy.io (returns raw text directly)
+    try {
+        const res = await fetch(`https://corsproxy.io/?${encodeURIComponent(targetUrl)}`);
+        if (res.ok) {
+            const text = await res.text();
+            if (text && text.length > 500) {
+                return text;
+            }
+        }
+    } catch (err) {
+        console.warn("corsproxy.io failed, trying allorigins...", err);
+    }
+
+    // Try Proxy 2: api.allorigins.win (returns JSON with contents)
+    const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`);
+    if (!res.ok) {
+        throw new Error(`Failed to fetch via CORS proxies. Status: ${res.status}`);
+    }
+    const data = await res.json();
+    return data.contents;
+}
+
+// Event listener for fetching social follower/subscriber count
+window.addEventListener('DOMContentLoaded', () => {
+    const fetchBtn = document.getElementById('btn-fetch-socials');
+    if (!fetchBtn) return;
+    
+    fetchBtn.addEventListener('click', async () => {
+        const ytInput = document.getElementById('mk-youtube-url').value;
+        const igInput = document.getElementById('mk-instagram-url').value;
+        
+        if (!ytInput && !igInput) {
+            alert("Please enter a YouTube link/handle or an Instagram username/link first.");
+            return;
+        }
+        
+        const icon = document.getElementById('fetch-socials-icon');
+        const btnText = document.getElementById('fetch-socials-text');
+        const errorEl = document.getElementById('fetch-socials-error');
+        
+        // UI Loading State
+        fetchBtn.disabled = true;
+        icon.classList.add('spin-animation');
+        btnText.innerText = "Syncing Live Stats...";
+        errorEl.style.display = 'none';
+        errorEl.innerText = '';
+        
+        let fetchedYt = null;
+        let fetchedIg = null;
+        let errors = [];
+        
+        // 1. Fetch YouTube Subscribers
+        if (ytInput) {
+            try {
+                const url = getYoutubeFetchUrl(ytInput);
+                const html = await fetchHtmlWithProxy(url);
+                const subs = extractYoutubeSubscribers(html);
+                if (subs !== null) {
+                    fetchedYt = subs;
+                } else {
+                    errors.push("Could not parse YouTube subscribers. Check the channel link/handle.");
+                }
+            } catch (err) {
+                console.error("YouTube Fetch Error:", err);
+                errors.push("Failed to connect to YouTube. The proxy might be rate-limited.");
+            }
+        }
+        
+        // 2. Fetch Instagram Followers
+        if (igInput) {
+            try {
+                const url = getInstagramFetchUrl(igInput);
+                const html = await fetchHtmlWithProxy(url);
+                const followers = extractInstagramFollowers(html);
+                if (followers !== null) {
+                    fetchedIg = followers;
+                } else {
+                    errors.push("Could not parse Instagram followers. Check the username/link.");
+                }
+            } catch (err) {
+                console.error("Instagram Fetch Error:", err);
+                errors.push("Failed to connect to Instagram. The proxy might be rate-limited.");
+            }
+        }
+        
+        // Apply updates if successful
+        if (fetchedYt !== null) {
+            document.getElementById('mk-youtube-subs').value = fetchedYt;
+        }
+        if (fetchedIg !== null) {
+            document.getElementById('mk-instagram-followers').value = fetchedIg;
+        }
+        
+        if (fetchedYt !== null || fetchedIg !== null) {
+            // Update preview and state
+            syncMediaKitPreview();
+        }
+        
+        // Handle error displays
+        if (errors.length > 0) {
+            errorEl.innerHTML = errors.map(e => `• ${e}`).join('<br>');
+            errorEl.style.display = 'block';
+        }
+        
+        // Restore UI State
+        fetchBtn.disabled = false;
+        icon.classList.remove('spin-animation');
+        btnText.innerText = "Fetch Live Followers & Subscribers";
+    });
+});
+
 
 // Brand Pitch Creator
 document.getElementById('generate-pitch-btn').addEventListener('click', () => {
