@@ -310,6 +310,119 @@ function renderDashboard() {
         });
     }
 
+    // Render monthly income trend chart dynamically from real invoices
+    const chartSvg = document.getElementById('dashboard-trend-chart');
+    if (chartSvg) {
+        chartSvg.innerHTML = ''; // Clear existing chart content
+        
+        // Helper to get last 6 months list
+        const getLast6Months = () => {
+            const list = [];
+            const date = new Date();
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date(date.getFullYear(), date.getMonth() - i, 1);
+                list.push({
+                    name: d.toLocaleString('en-US', { month: 'short' }),
+                    monthNum: d.getMonth(),
+                    year: d.getFullYear()
+                });
+            }
+            return list;
+        };
+
+        // Helper to format short numbers (e.g. 150K, 1.5L)
+        const formatShortNumber = (num) => {
+            if (num === 0) return '0';
+            if (num >= 10000000) {
+                return (num / 10000000).toFixed(1).replace(/\.0$/, '') + 'Cr';
+            }
+            if (num >= 100000) {
+                return (num / 100000).toFixed(1).replace(/\.0$/, '') + 'L';
+            }
+            if (num >= 1000) {
+                return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+            }
+            return Math.round(num).toString();
+        };
+
+        const monthsList = getLast6Months();
+        const monthlyTotals = monthsList.map(m => {
+            let total = 0;
+            state.invoices.forEach(inv => {
+                if (inv.status === 'paid' && inv.date) {
+                    const invDate = new Date(inv.date);
+                    if (invDate.getMonth() === m.monthNum && invDate.getFullYear() === m.year) {
+                        total += inv.totalAmount;
+                    }
+                }
+            });
+            return total;
+        });
+
+        const maxVal = Math.max(...monthlyTotals, 1000); // Scale with minimum of 1000 to prevent zero divisions
+        
+        // 1. Grid lines (horizontal)
+        const gridHeights = [30, 80, 130, 170];
+        gridHeights.forEach(y => {
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', '50');
+            line.setAttribute('y1', y);
+            line.setAttribute('x2', '470');
+            line.setAttribute('y2', y);
+            line.setAttribute('class', 'chart-grid-line');
+            chartSvg.appendChild(line);
+        });
+
+        // Calculate coordinates
+        const points = [];
+        const coords = monthsList.map((m, idx) => {
+            const x = 80 + idx * 70; // Map X from 80 to 430
+            const y = 160 - (monthlyTotals[idx] / maxVal) * 110; // Map Y from 160 to 50
+            points.push(`${x},${y}`);
+            return { x, y, val: monthlyTotals[idx], monthName: m.name };
+        });
+
+        // 2. Draw Polyline
+        const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+        polyline.setAttribute('fill', 'none');
+        polyline.setAttribute('stroke', '#2563eb');
+        polyline.setAttribute('stroke-width', '3');
+        polyline.setAttribute('stroke-linecap', 'round');
+        polyline.setAttribute('stroke-linejoin', 'round');
+        polyline.setAttribute('points', points.join(' '));
+        chartSvg.appendChild(polyline);
+
+        // 3. Draw Points, Month Labels, and Value Tags
+        coords.forEach(pt => {
+            // Point circle
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', pt.x);
+            circle.setAttribute('cy', pt.y);
+            circle.setAttribute('r', '4.5');
+            circle.setAttribute('fill', '#2563eb');
+            circle.setAttribute('stroke', '#ffffff');
+            circle.setAttribute('stroke-width', '1.5');
+            chartSvg.appendChild(circle);
+
+            // Month Label (bottom)
+            const textMonth = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            textMonth.setAttribute('x', pt.x);
+            textMonth.setAttribute('y', '190');
+            textMonth.setAttribute('class', 'chart-label');
+            textMonth.setAttribute('text-anchor', 'middle');
+            textMonth.textContent = pt.monthName;
+            chartSvg.appendChild(textMonth);
+
+            // Value Tag (above the point)
+            const textVal = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            textVal.setAttribute('x', pt.x);
+            textVal.setAttribute('y', pt.y - 12);
+            textVal.setAttribute('class', 'chart-value-tag');
+            textVal.setAttribute('text-anchor', 'middle');
+            textVal.textContent = `₹${formatShortNumber(pt.val)}`;
+            chartSvg.appendChild(textVal);
+        });
+    }
 }
 
 function getStatusLabelText(status) {

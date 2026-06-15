@@ -111,40 +111,8 @@
                             <span class="badge">Last 6 Months</span>
                         </div>
                         <div class="chart-container">
-                            <!-- SVG-based simple & clean minimalist chart -->
-                            <svg class="minimal-chart" viewBox="0 0 500 200">
-                                <!-- Grid lines -->
-                                <line x1="50" y1="30" x2="470" y2="30" class="chart-grid-line" />
-                                <line x1="50" y1="80" x2="470" y2="80" class="chart-grid-line" />
-                                <line x1="50" y1="130" x2="470" y2="130" class="chart-grid-line" />
-                                <line x1="50" y1="170" x2="470" y2="170" class="chart-grid-line" />
-
-                                <!-- Line and Points -->
-                                <polyline fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round"
-                                    stroke-linejoin="round" points="80,160 150,140 220,120 290,70 360,90 430,40" />
-
-                                <circle cx="80" cy="160" r="4.5" fill="#2563eb" stroke="#ffffff" stroke-width="1.5" />
-                                <circle cx="150" cy="140" r="4.5" fill="#2563eb" stroke="#ffffff" stroke-width="1.5" />
-                                <circle cx="220" cy="120" r="4.5" fill="#2563eb" stroke="#ffffff" stroke-width="1.5" />
-                                <circle cx="290" cy="70" r="4.5" fill="#2563eb" stroke="#ffffff" stroke-width="1.5" />
-                                <circle cx="360" cy="90" r="4.5" fill="#2563eb" stroke="#ffffff" stroke-width="1.5" />
-                                <circle cx="430" cy="40" r="4.5" fill="#2563eb" stroke="#ffffff" stroke-width="1.5" />
-
-                                <!-- Month labels -->
-                                <text x="80" y="190" class="chart-label" text-anchor="middle">Jan</text>
-                                <text x="150" y="190" class="chart-label" text-anchor="middle">Feb</text>
-                                <text x="220" y="190" class="chart-label" text-anchor="middle">Mar</text>
-                                <text x="290" y="190" class="chart-label" text-anchor="middle">Apr</text>
-                                <text x="360" y="190" class="chart-label" text-anchor="middle">May</text>
-                                <text x="430" y="190" class="chart-label" text-anchor="middle">Jun</text>
-
-                                <!-- Value labels on points -->
-                                <text x="80" y="145" class="chart-value-tag" text-anchor="middle">₹30K</text>
-                                <text x="150" y="125" class="chart-value-tag" text-anchor="middle">₹45K</text>
-                                <text x="220" y="105" class="chart-value-tag" text-anchor="middle">₹60K</text>
-                                <text x="290" y="55" class="chart-value-tag" text-anchor="middle">₹110K</text>
-                                <text x="360" y="75" class="chart-value-tag" text-anchor="middle">₹90K</text>
-                                <text x="430" y="25" class="chart-value-tag" text-anchor="middle">₹150K</text>
+                            <svg id="dashboard-trend-chart" class="minimal-chart" viewBox="0 0 500 200">
+                                <!-- Generated dynamically via JS -->
                             </svg>
                         </div>
                     </div>
