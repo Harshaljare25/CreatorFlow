@@ -1230,44 +1230,11 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const authScreen = document.getElementById('auth-screen');
-    const loginForm = document.getElementById('login-form');
-    const signupForm = document.getElementById('signup-form');
-    const googleAuthBtn = document.getElementById('btn-google-auth');
     const logoutBtn = document.getElementById('btn-logout');
-    const errorEl = document.getElementById('auth-error-msg');
 
     if (!isFirebaseConfigured) {
-        if (errorEl) {
-            errorEl.innerHTML = `<strong>Firebase config required!</strong><br>Please open <code style="background: rgba(0,0,0,0.1); padding: 2px 4px; border-radius: 4px;">firebase-config.js</code> and replace the placeholders with your actual Firebase API keys.`;
-            errorEl.style.display = 'block';
-            errorEl.style.backgroundColor = 'var(--warning-light)';
-            errorEl.style.color = 'var(--warning)';
-            errorEl.style.borderColor = '#fcd34d';
-        }
-        
-        // Setup mock login flow for developer demo
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert("Firebase is not configured yet. Please configure firebase-config.js!");
-        });
-        signupForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert("Firebase is not configured yet. Please configure firebase-config.js!");
-        });
-        googleAuthBtn.addEventListener('click', () => {
-            alert("Firebase is not configured yet. Please configure firebase-config.js!");
-        });
-        logoutBtn.addEventListener('click', () => {
-            authScreen.classList.add('active');
-        });
-
-        // Hydrate from local storage for demo
-        loadState().then(() => {
-            const appContainer = document.querySelector('.app-container');
-            if (appContainer) appContainer.style.display = 'flex';
-            refreshUI();
-        });
+        // If Firebase is not configured, redirect to login.html to show configuration error
+        window.location.href = 'login.html';
         return;
     }
 
@@ -1277,8 +1244,7 @@ window.addEventListener('DOMContentLoaded', () => {
         if (user) {
             currentUser = user;
             
-            // Hide auth overlay & show app
-            authScreen.classList.remove('active');
+            // Show app container
             if (appContainer) appContainer.style.display = 'flex';
             
             // Load state from Firestore & LocalStorage
@@ -1292,137 +1258,20 @@ window.addEventListener('DOMContentLoaded', () => {
             // Reset global in-memory state on sign-out
             resetStateToDefault();
             
-            // Show auth overlay & hide app completely to enforce compulsory login
-            authScreen.classList.add('active');
-            if (appContainer) appContainer.style.display = 'none';
-            
-            // Reset forms and spinners
-            loginForm.reset();
-            signupForm.reset();
-            
-            const loginSubmit = document.getElementById('btn-login-submit');
-            const signupSubmit = document.getElementById('btn-signup-submit');
-            loginSubmit.querySelector('.btn-text').style.display = 'inline';
-            loginSubmit.querySelector('.spinner').style.display = 'none';
-            signupSubmit.querySelector('.btn-text').style.display = 'inline';
-            signupSubmit.querySelector('.spinner').style.display = 'none';
-            errorEl.style.display = 'none';
+            // Redirect to login.html to enforce compulsory login
+            window.location.href = 'login.html';
         }
     });
 
-    // Form Submissions
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('login-email').value.trim();
-        const password = document.getElementById('login-password').value;
-        const submitBtn = document.getElementById('btn-login-submit');
-        
-        submitBtn.querySelector('.btn-text').style.display = 'none';
-        submitBtn.querySelector('.spinner').style.display = 'inline-block';
-        errorEl.style.display = 'none';
-        
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-        } catch (err) {
-            showAuthError(err);
-            submitBtn.querySelector('.btn-text').style.display = 'inline';
-            submitBtn.querySelector('.spinner').style.display = 'none';
-        }
-    });
-
-    signupForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const name = document.getElementById('signup-name').value.trim();
-        const email = document.getElementById('signup-email').value.trim();
-        const password = document.getElementById('signup-password').value;
-        const submitBtn = document.getElementById('btn-signup-submit');
-        
-        submitBtn.querySelector('.btn-text').style.display = 'none';
-        submitBtn.querySelector('.spinner').style.display = 'inline-block';
-        errorEl.style.display = 'none';
-        
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-            
-            // Pre-seed Firestore doc with clean slate for new users
-            currentUser = user;
-            state.profile = {
-                name: name,
-                niche: "Tech & Lifestyle",
-                bio: "Helping creators and coders simplify business setups with minimal aesthetics and tools.",
-                youtubeSubs: 0,
-                instagramFollowers: 0,
-                avgViews: 0,
-                engagementRate: 0.0,
-                rateDedicated: 0,
-                rateIntegrated: 0
-            };
-            state.invoices = [];
-            state.campaigns = [];
-            state.dmConfig = {
-                varA: "Hey {name}! Thanks for joining. What type of content interests you the most?",
-                varB: "Welcome aboard, {name}! Glad to connect. Let me know if you need help with creator resources.",
-                varC: "Hello {name}! Thanks for the follow. I post weekly tutorials. Let me know your feedback!",
-                delay: "15"
-            };
-            
-            await saveState();
-            
-        } catch (err) {
-            showAuthError(err);
-            submitBtn.querySelector('.btn-text').style.display = 'inline';
-            submitBtn.querySelector('.spinner').style.display = 'none';
-        }
-    });
-
-    googleAuthBtn.addEventListener('click', async () => {
-        const provider = new GoogleAuthProvider();
-        errorEl.style.display = 'none';
-        
-        try {
-            const result = await signInWithPopup(auth, provider);
-            const user = result.user;
-            
-            currentUser = user;
-            
-            // Check if user has an existing doc in firestore, if not, create it
-            const userDocRef = doc(firestoreDb, "users", user.uid);
-            const docSnap = await getDoc(userDocRef);
-            if (!docSnap.exists()) {
-                state.profile = {
-                    name: user.displayName || "My Channel",
-                    niche: "Tech & Lifestyle",
-                    bio: "Helping creators and coders simplify business setups with minimal aesthetics and tools.",
-                    youtubeSubs: 0,
-                    instagramFollowers: 0,
-                    avgViews: 0,
-                    engagementRate: 0.0,
-                    rateDedicated: 0,
-                    rateIntegrated: 0
-                };
-                state.invoices = [];
-                state.campaigns = [];
-                state.dmConfig = {
-                    varA: "Hey {name}! Thanks for joining. What type of content interests you the most?",
-                    varB: "Welcome aboard, {name}! Glad to connect. Let me know if you need help with creator resources.",
-                    varC: "Hello {name}! Thanks for the follow. I post weekly tutorials. Let me know your feedback!",
-                    delay: "15"
-                };
-                await saveState();
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                // Clear local storage on sign out
+                localStorage.removeItem(getStorageKey());
+            } catch (err) {
+                console.error("Logout failed:", err);
             }
-        } catch (err) {
-            showAuthError(err);
-        }
-    });
-
-    logoutBtn.addEventListener('click', async () => {
-        try {
-            await signOut(auth);
-            // Clear local storage on sign out
-            localStorage.removeItem(getStorageKey());
-        } catch (err) {
-            console.error("Logout failed:", err);
-        }
-    });
+        });
+    }
 });
