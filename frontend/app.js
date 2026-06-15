@@ -38,15 +38,15 @@ if (isFirebaseConfigured) {
 // Global State Object
 let state = {
     profile: {
-        name: "Harshal Tech Media",
-        niche: "Tech & Coding",
-        bio: "Helping creators and coders simplify business setups with minimal aesthetics and tools.",
-        youtubeSubs: 45000,
-        instagramFollowers: 15000,
-        avgViews: 12000,
-        engagementRate: 6.4,
-        rateDedicated: 60000,
-        rateIntegrated: 25000
+        name: "",
+        niche: "",
+        bio: "",
+        youtubeSubs: 0,
+        instagramFollowers: 0,
+        avgViews: 0,
+        engagementRate: 0.0,
+        rateDedicated: 0,
+        rateIntegrated: 0
     },
     invoices: [],
     campaigns: [],
@@ -60,88 +60,6 @@ let state = {
     activeReminderType: 'polite'
 };
 
-// Initial Mock Data (used if LocalStorage is empty to give a populated feel)
-const mockInvoices = [
-    {
-        id: "inv-mock-1",
-        number: "CF-2026-001",
-        date: "2026-06-01",
-        creatorName: "Harshal Tech Media",
-        creatorState: "Maharashtra",
-        creatorGSTIN: "27AAAAA1111A1Z1",
-        brandName: "Mamaearth India",
-        brandState: "Karnataka",
-        brandGSTIN: "29BBBBB2222B2Z2",
-        itemDesc: "1x Dedicated YouTube Video Integration",
-        itemPrice: 50000,
-        gstRate: 18,
-        taxAmount: 9000,
-        totalAmount: 59000,
-        status: "paid"
-    },
-    {
-        id: "inv-mock-2",
-        number: "CF-2026-002",
-        date: "2026-06-10",
-        creatorName: "Harshal Tech Media",
-        creatorState: "Maharashtra",
-        creatorGSTIN: "27AAAAA1111A1Z1",
-        brandName: "Hostinger",
-        brandState: "Maharashtra",
-        brandGSTIN: "27CCCCC3333C3Z3",
-        itemDesc: "1x Integrated Reel Review",
-        itemPrice: 25000,
-        gstRate: 18,
-        taxAmount: 4500,
-        totalAmount: 29500,
-        status: "pending"
-    },
-    {
-        id: "inv-mock-3",
-        number: "CF-2026-003",
-        date: "2026-05-15",
-        creatorName: "Harshal Tech Media",
-        creatorState: "Maharashtra",
-        creatorGSTIN: "27AAAAA1111A1Z1",
-        brandName: "ASUS India",
-        brandState: "Delhi",
-        brandGSTIN: "07DDDDD4444D4Z4",
-        itemDesc: "1x Laptop Unboxing & Feature Post",
-        itemPrice: 60000,
-        gstRate: 18,
-        taxAmount: 10800,
-        totalAmount: 70800,
-        status: "overdue"
-    }
-];
-
-const mockCampaigns = [
-    {
-        id: "camp-mock-1",
-        brand: "Mamaearth India",
-        title: "Dedicated YouTube Video",
-        amount: 50000,
-        deadline: "2026-06-01",
-        status: "cleared"
-    },
-    {
-        id: "camp-mock-2",
-        brand: "Hostinger",
-        title: "Integrated Reel Review",
-        amount: 25000,
-        deadline: "2026-06-25",
-        status: "published"
-    },
-    {
-        id: "camp-mock-3",
-        brand: "ASUS India",
-        title: "ROG Laptop Unboxing",
-        amount: 60000,
-        deadline: "2026-06-18",
-        status: "script"
-    }
-];
-
 // Load State from LocalStorage and Firestore
 async function loadState() {
     // 1. Try local storage first to render immediately
@@ -153,9 +71,9 @@ async function loadState() {
             console.error("Failed to parse saved state", e);
         }
     } else {
-        // Hydrate with mock data
-        state.invoices = mockInvoices;
-        state.campaigns = mockCampaigns;
+        // Initialize with empty arrays for a clean production setup
+        state.invoices = [];
+        state.campaigns = [];
     }
     
     // 2. If signed in, fetch from Firestore
